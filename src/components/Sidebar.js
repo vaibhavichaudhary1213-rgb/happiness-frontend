@@ -2,6 +2,10 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { forestCabinTheme as theme } from "../styles/forestCabinTheme.js";
+import { 
+  Sun, Moon, Cloud, Flower2, Leaf, 
+  Star, Heart, Coffee, Smile, Cat, Bird 
+} from 'lucide-react';
 
 function Sidebar({ activeTab, onTabChange, onExpandChange, userData, onUpdateUser, onLogout }) {
   const [isExpanded, setIsExpanded] = useState(true);
@@ -22,96 +26,86 @@ function Sidebar({ activeTab, onTabChange, onExpandChange, userData, onUpdateUse
   console.log("Admin tab present:", menuItems.some(item => item.id === "admin"));
 
   // Avatars reflecting diverse mental states and personalities
-  const personalityOptions = [
-    { 
-      id: 1, 
-      icon: Sun, 
-      name: "The Optimist", 
-      color: "#F59E0B", 
-      emoji: "☀️", 
-      description: "This pain wouldn't be forevermore" 
-    },
-    { 
-      id: 2, 
-      icon: Moon, 
-      name: "The Poet", 
-      color: "#8B5CF6", 
-      emoji: "🌙", 
-      description: "All is fair in love and poetry" 
-    },
-    { 
-      id: 3, 
-      icon: Cloud, 
-      name: "The Overthinker", 
-      color: "#6B7280", 
-      emoji: "☁️", 
-      description: "I wake in the night, I pace like a ghost" 
-    },
-    { 
-      id: 4, 
-      icon: Flower2, 
-      name: "The Healer", 
-      color: "#EC4899", 
-      emoji: "🌸", 
-      description: "Turning pain into poetry" 
-    },
-    { 
-      id: 5, 
-      icon: Leaf, 
-      name: "The Grounded One", 
-      color: "#10B981", 
-      emoji: "🍃", 
-      description: "Right here where I stand is holy ground" 
-    },
-    { 
-      id: 6, 
-      icon: Star, 
-      name: "The Dreamer", 
-      color: "#FCD34D", 
-      emoji: "✨", 
-      description: "I will go to the secret gardens in my mind" 
-    },
-    { 
-      id: 7, 
-      icon: Heart, 
-      name: "The Empath", 
-      color: "#F97316", 
-      emoji: "💝", 
-      description: "Too soft for all of it" 
-    },
-    { 
-      id: 8, 
-      icon: Coffee, 
-      name: "The Escapist", 
-      color: "#8B4513", 
-      emoji: "☕", 
-      description: "They nicknamed me 'The Bolter'" 
-    },
-    { 
-      id: 9, 
-      icon: Smile, 
-      name: "The Survivor", 
-      color: "#FBBF24", 
-      emoji: "😊", 
-      description: "Long story short, I survived" 
-    },
-    { 
-      id: 10, 
-      icon: Cat, 
-      name: "The Curious Soul", 
-      color: "#9CA3AF", 
-      emoji: "🐱", 
-      description: "Curious time gave me no compasses, gave me no signs" 
-    },
-    { 
-      id: 11, 
-      icon: Bird, 
-      name: "The Free Spirit", 
-      color: "#60A5FA", 
-      emoji: "🐦", 
-      description: "Happy, free, confused and lonely in the best way" 
-    }
-  ];
+  // Avatars reflecting diverse mental states and personalities
+const personalityOptions = [
+  { 
+    id: 1, 
+    name: "The Optimist", 
+    color: "#F59E0B", 
+    emoji: "☀️", 
+    description: "This pain wouldn't be forevermore" 
+  },
+  { 
+    id: 2, 
+    name: "The Poet", 
+    color: "#8B5CF6", 
+    emoji: "🌙", 
+    description: "All is fair in love and poetry" 
+  },
+  { 
+    id: 3, 
+    name: "The Overthinker", 
+    color: "#6B7280", 
+    emoji: "☁️", 
+    description: "I wake in the night, I pace like a ghost" 
+  },
+  { 
+    id: 4, 
+    name: "The Healer", 
+    color: "#EC4899", 
+    emoji: "🌸", 
+    description: "Turning pain into poetry" 
+  },
+  { 
+    id: 5, 
+    name: "The Grounded One", 
+    color: "#10B981", 
+    emoji: "🍃", 
+    description: "Right here where I stand is holy ground" 
+  },
+  { 
+    id: 6, 
+    name: "The Dreamer", 
+    color: "#FCD34D", 
+    emoji: "✨", 
+    description: "I will go to the secret gardens in my mind" 
+  },
+  { 
+    id: 7, 
+    name: "The Empath", 
+    color: "#F97316", 
+    emoji: "💝", 
+    description: "Too soft for all of it" 
+  },
+  { 
+    id: 8, 
+    name: "The Escapist", 
+    color: "#8B4513", 
+    emoji: "☕", 
+    description: "They nicknamed me 'The Bolter'" 
+  },
+  { 
+    id: 9, 
+    name: "The Survivor", 
+    color: "#FBBF24", 
+    emoji: "😊", 
+    description: "Long story short, I survived" 
+  },
+  { 
+    id: 10, 
+    name: "The Curious Soul", 
+    color: "#9CA3AF", 
+    emoji: "🐱", 
+    description: "Curious time gave me no compasses, gave me no signs" 
+  },
+  { 
+    id: 11, 
+    name: "The Free Spirit", 
+    color: "#60A5FA", 
+    emoji: "🐦", 
+    description: "Happy, free, confused and lonely in the best way" 
+  }
+];
 
   const toggleSidebar = () => {
     const newExpanded = !isExpanded;
