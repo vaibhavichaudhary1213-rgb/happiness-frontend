@@ -69,3 +69,4 @@ export const getAnalytics = async () => {
   }
 };
 
+export default API;
