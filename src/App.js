@@ -15,12 +15,6 @@ import AdminDashboard from './components/AdminDashboard.js';
 import { trackSession } from './services/adminApi';
 import { userTracking } from './services/userTracking';
 
-useEffect(() => {
-  // Track when user visits
-  const userId = userTracking.getUserId();
-  trackSession(userId);
-}, []);
-
 function App() {
   const [activeTab, setActiveTab] = useState("chat");
   const [userId] = useState("user_1");
@@ -29,6 +23,12 @@ function App() {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
   const [showWelcome, setShowWelcome] = useState(true); // Always start with true
   const [userData, setUserData] = useState(null);
+  
+  useEffect(() => {
+  // Track when user visits
+  const userId = userTracking.getUserId();
+  trackSession(userId);
+}, []);
 
   // Use Whispering Woods & Lavender theme
   const theme = forestCabinTheme;
