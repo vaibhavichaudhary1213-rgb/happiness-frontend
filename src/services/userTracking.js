@@ -13,15 +13,14 @@ class UserTracking {
     const components = [
       navigator.userAgent,
       navigator.language,
-      screen.width + 'x' + screen.height,
-      screen.colorDepth,
+      window.screen.width + 'x' + window.screen.height,  // ✅ Fixed: window.screen
+      window.screen.colorDepth,                           // ✅ Fixed: window.screen
       new Date().getTimezoneOffset(),
       navigator.hardwareConcurrency || 'unknown',
       navigator.deviceMemory || 'unknown',
       !!navigator.maxTouchPoints,
       !!window.indexedDB,
       !!window.openDatabase,
-      // Add more fingerprinting components
     ];
     
     // Create a simple hash
