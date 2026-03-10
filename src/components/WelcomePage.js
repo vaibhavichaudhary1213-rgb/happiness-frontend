@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { forestCabinTheme as theme } from "../styles/forestCabinTheme.js";
 import { userTracking } from '../services/userTracking';
-import { trackUser } from '../services/adminApi';
 
 // Icons
 import { 
@@ -170,7 +169,7 @@ function WelcomePage({ onWelcomeComplete }) {
         joinedAt: new Date().toISOString()
       };
 
-      // Track the signup in user tracking
+      // ✅ Track the signup in user tracking
       userTracking.trackUserSignup({
         userId: userData.userId,
         name: userData.name,
@@ -178,7 +177,7 @@ function WelcomePage({ onWelcomeComplete }) {
         personality: userData.personality.name
       });
 
-      // Track session start
+      // ✅ Track session start
       userTracking.trackSession('app_start', { 
         from: 'welcome',
         name: userData.name,
@@ -192,15 +191,6 @@ function WelcomePage({ onWelcomeComplete }) {
       onWelcomeComplete(userData);
     }
   };
-
-  const handleSignup = (userData) => {
-  // Your existing signup code
-  trackUser({
-    name: userData.name,
-    age: userData.age,
-    personality: userData.personality
-  });
-};
 
   const handleBack = () => {
     setError("");
