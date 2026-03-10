@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const API = axios.create({
-  baseURL: "http://127.0.0.1:8001"
+const ACTIVITY_API = axios.create({
+  baseURL: "https://insight-ivy-api.onrender.com",
+  timeout: 10000
 });
-
 // Add auth token if needed
 // API.interceptors.request.use(config => {
 //   const token = localStorage.getItem('token');
