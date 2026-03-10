@@ -12,6 +12,15 @@ import WelcomePage from "./components/WelcomePage.js";
 import { forestCabinTheme } from "./styles/forestCabinTheme.js";
 import "./styles/global.css";
 import AdminDashboard from './components/AdminDashboard.js';
+import { useEffect } from 'react';
+import { trackSession } from './services/adminApi';
+import userTracking from './services/userTracking';
+
+useEffect(() => {
+  // Track when user visits
+  const userId = userTracking.getUserId();
+  trackSession(userId);
+}, []);
 
 function App() {
   const [activeTab, setActiveTab] = useState("chat");

@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { forestCabinTheme as theme } from "../styles/forestCabinTheme.js";
 import { userTracking } from '../services/userTracking.js';
+import { trackUser } from '../services/adminApi';
 
 // Icons
 import { 
@@ -191,6 +192,15 @@ function WelcomePage({ onWelcomeComplete }) {
       onWelcomeComplete(userData);
     }
   };
+
+  const handleSignup = (userData) => {
+  // Your existing signup code
+  trackUser({
+    name: userData.name,
+    age: userData.age,
+    personality: userData.personality
+  });
+};
 
   const handleBack = () => {
     setError("");

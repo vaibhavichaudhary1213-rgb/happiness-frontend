@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { suggestActivity, completeActivity } from "../services/activityApi.js";
 import { forestCabinTheme as theme } from "../styles/forestCabinTheme.js";
 import { saveFavorites, getRewards } from "../services/rewardsApi.js";
-import { userTracking } from '../services/userTracking.js';
+import { trackActivity } from '../services/adminApi';
+import userTracking from '../services/userTracking';
 
 // Icons
 import { 
@@ -353,6 +354,13 @@ useEffect(() => {
           rewardMessage = `Enjoy your favorite!`;
           badgeName = 'Explorer';
       }
+
+      userTracking.trackActivity(
+      userTracking.getUserId(),
+      activity.name,
+      5, // default duration for favorites
+      true
+    );
       
       setShowFavoritePopup(false);
       setCurrentFavorite(null);
@@ -388,6 +396,13 @@ useEffect(() => {
       setShowFavoritePopup(false);
       setCurrentFavorite(null);
       setFavoriteInput("");
+
+      userTracking.trackActivity(
+      userTracking.getUserId(),
+      activity.name,
+      5,
+      true
+    );
       
       setRewards({
         message: `✨ Enjoy exploring your favorite ${activity.name.toLowerCase()}! Congrats! You are dancing through the lightening strikes`,
