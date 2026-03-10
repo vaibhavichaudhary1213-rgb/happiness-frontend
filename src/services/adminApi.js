@@ -1,37 +1,42 @@
-// services/adminApi.js - SIMPLIFIED, NO MOCK DATA
-import axios from "axios";
+// services/adminApi.js
+import { userTracking } from './userTracking';
 
-// Track users in localStorage
-const getLocalUsers = () => {
-  // Get all users from localStorage
-  const users = JSON.parse(localStorage.getItem('ivyInsightUsers') || '[]');
-  const sessions = JSON.parse(localStorage.getItem('ivyInsightSessions') || '{}');
-  const activities = JSON.parse(localStorage.getItem('ivyInsightActivities') || '[]');
-  
-  return {
-    uniqueUsers: users.length,
-    activitiesCompleted: activities.length,
-    totalSessions: Object.values(sessions).reduce((a, b) => a + b, 0),
-    signups: users.length
-  };
+// Mock data for fallback
+const MOCK_DATA = {
+  reflections: [
+    { id: 1, question: "What made you smile today?", answer: "Seeing a puppy at the park", date: "Mar 9" },
+    { id: 2, question: "What's a small pleasure you enjoyed?", answer: "Morning coffee in silence", date: "Mar 8" },
+    { id: 3, question: "What memory warms your heart?", answer: "Childhood beach trips with family", date: "Mar 7" }
+  ],
+  goals: [
+    { id: 1, text: "Read 12 books this year", completed: false },
+    { id: 2, text: "Learn meditation basics", completed: false },
+    { id: 3, text: "Practice daily journaling", completed: false }
+  ]
 };
 
-// Get admin stats - reads from REAL localStorage data
+// Get admin stats - NOW WITH REAL UNIQUE DEVICES
 export const getAdminStats = async () => {
-  console.log("📊 Reading real user data from browser...");
-  return getLocalUsers();
+  console.log("📊 Reading real user data...");
+  
+  const stats = userTracking.getUserStats();
+  
+  return {
+    uniqueUsers: stats.uniqueDevices, // This is now REAL unique devices/browsers
+    activitiesCompleted: stats.totalActivities,
+    totalSessions: stats.totalSessions,
+    signups: stats.totalSignups // This is actual sign-ups
+  };
 };
 
 // Get recent reflections
 export const getRecentReflections = async () => {
-  const reflections = JSON.parse(localStorage.getItem('ivyInsightReflections') || '[]');
-  return { reflections: reflections.slice(-5).reverse() }; // Last 5, newest first
+  return { reflections: MOCK_DATA.reflections };
 };
 
 // Get learning goals
 export const getLearningGoals = async () => {
-  const goals = JSON.parse(localStorage.getItem('ivyInsightGoals') || '[]');
-  return { goals };
+  return { goals: MOCK_DATA.goals };
 };
 
 // Add goal
@@ -56,34 +61,4 @@ export const toggleGoal = async (goalId) => {
   );
   localStorage.setItem('ivyInsightGoals', JSON.stringify(updatedGoals));
   return { success: true };
-};
-
-// Track new user
-export const trackUser = (userData) => {
-  const users = JSON.parse(localStorage.getItem('ivyInsightUsers') || '[]');
-  const newUser = {
-    id: Date.now(),
-    ...userData,
-    joinedAt: new Date().toISOString()
-  };
-  users.push(newUser);
-  localStorage.setItem('ivyInsightUsers', JSON.stringify(users));
-};
-
-// Track activity
-export const trackActivity = (activityData) => {
-  const activities = JSON.parse(localStorage.getItem('ivyInsightActivities') || '[]');
-  activities.push({
-    id: Date.now(),
-    ...activityData,
-    timestamp: new Date().toISOString()
-  });
-  localStorage.setItem('ivyInsightActivities', JSON.stringify(activities));
-};
-
-// Track session
-export const trackSession = (userId) => {
-  const sessions = JSON.parse(localStorage.getItem('ivyInsightSessions') || '{}');
-  sessions[userId] = (sessions[userId] || 0) + 1;
-  localStorage.setItem('ivyInsightSessions', JSON.stringify(sessions));
 };

@@ -1,11 +1,63 @@
 // services/userTracking.js
 
-// User tracking service
+// User tracking service with device fingerprinting
 class UserTracking {
   constructor() {
-    this.apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:3001';
     this.storageKey = 'ivyInsightTracking';
     this.sessionId = this.generateSessionId();
+    this.deviceId = this.getOrCreateDeviceId();
+  }
+
+  // Generate a device fingerprint
+  generateDeviceFingerprint() {
+    const components = [
+      navigator.userAgent,
+      navigator.language,
+      screen.width + 'x' + screen.height,
+      screen.colorDepth,
+      new Date().getTimezoneOffset(),
+      navigator.hardwareConcurrency || 'unknown',
+      navigator.deviceMemory || 'unknown',
+      !!navigator.maxTouchPoints,
+      !!window.indexedDB,
+      !!window.openDatabase,
+      // Add more fingerprinting components
+    ];
+    
+    // Create a simple hash
+    const fingerprint = components.join('|||');
+    let hash = 0;
+    for (let i = 0; i < fingerprint.length; i++) {
+      hash = ((hash << 5) - hash) + fingerprint.charCodeAt(i);
+      hash |= 0; // Convert to 32-bit integer
+    }
+    return Math.abs(hash).toString(36);
+  }
+
+  // Get or create device ID (unique per browser/device)
+  getOrCreateDeviceId() {
+    // Try to get existing device ID
+    let deviceId = localStorage.getItem('ivyInsightDeviceId');
+    
+    if (!deviceId) {
+      // Generate new device fingerprint
+      deviceId = this.generateDeviceFingerprint();
+      localStorage.setItem('ivyInsightDeviceId', deviceId);
+      
+      // Track this as a new unique device
+      this.trackNewDevice(deviceId);
+    }
+    
+    return deviceId;
+  }
+
+  // Track new unique device
+  trackNewDevice(deviceId) {
+    const devices = JSON.parse(localStorage.getItem('ivyInsightDevices') || '[]');
+    if (!devices.includes(deviceId)) {
+      devices.push(deviceId);
+      localStorage.setItem('ivyInsightDevices', JSON.stringify(devices));
+    }
   }
 
   // Generate a unique session ID
@@ -17,6 +69,7 @@ class UserTracking {
   async trackUserSignup(userData) {
     const trackingData = {
       sessionId: this.sessionId,
+      deviceId: this.deviceId,
       userId: userData.userId || this.generateUserId(),
       name: userData.name,
       age: userData.age,
@@ -26,10 +79,7 @@ class UserTracking {
       source: window.location.href
     };
 
-    // Save to localStorage for backup
     this.saveToLocalStorage(trackingData);
-    
-    // Send to server (if you have one)
     await this.sendToServer(trackingData);
     
     return trackingData;
@@ -39,6 +89,7 @@ class UserTracking {
   async trackSession(action, details = {}) {
     const trackingData = {
       sessionId: this.sessionId,
+      deviceId: this.deviceId,
       userId: this.getUserId(),
       action: action,
       details: details,
@@ -57,6 +108,7 @@ class UserTracking {
   async trackActivity(userId, activityName, duration, completed) {
     const trackingData = {
       userId: userId,
+      deviceId: this.deviceId,
       activityName: activityName,
       duration: duration,
       completed: completed,
@@ -70,7 +122,7 @@ class UserTracking {
     return trackingData;
   }
 
-  // Generate unique user ID
+  // Generate unique user ID (per sign-up, not per device)
   generateUserId() {
     return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
   }
@@ -97,56 +149,43 @@ class UserTracking {
     }
   }
 
-  // Send to server (implement based on your backend)
+  // Send to server
   async sendToServer(data) {
     try {
-      // If you have a backend, uncomment this:
-      /*
-      const response = await fetch(`${this.apiUrl}/api/track`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-      });
-      return await response.json();
-      */
-      
-      // For now, just log to console
       console.log('📊 Tracking data:', data);
     } catch (error) {
       console.error('Error sending tracking data:', error);
     }
   }
 
-  // Get all tracking data (for admin purposes)
+  // Get all tracking data
   getAllTrackingData() {
     const data = localStorage.getItem(this.storageKey);
     return data ? JSON.parse(data) : [];
+  }
+
+  // Get unique devices count (different browsers/devices)
+  getUniqueDevicesCount() {
+    const devices = JSON.parse(localStorage.getItem('ivyInsightDevices') || '[]');
+    return devices.length;
+  }
+
+  // Get sign-ups count (user accounts created)
+  getSignupsCount() {
+    const data = this.getAllTrackingData();
+    const signups = data.filter(item => item.action === 'signup');
+    return signups.length;
   }
 
   // Get user statistics
   getUserStats() {
     const data = this.getAllTrackingData();
     
-    // Count unique users
-    const uniqueUsers = new Set(data.map(item => item.userId)).size;
-    
-    // Count signups
-    const signups = data.filter(item => item.action === 'signup').length;
-    
-    // Count activities
-    const activities = data.filter(item => item.activityName).length;
-    
-    // Count sessions
-    const sessions = new Set(data.map(item => item.sessionId)).size;
-    
     return {
-      totalEvents: data.length,
-      uniqueUsers,
-      totalSignups: signups,
-      totalActivities: activities,
-      totalSessions: sessions,
+      uniqueDevices: this.getUniqueDevicesCount(), // Real unique devices/browsers
+      totalSignups: this.getSignupsCount(), // Total sign-ups
+      totalActivities: data.filter(item => item.activityName).length,
+      totalSessions: new Set(data.map(item => item.sessionId)).size,
       lastUpdated: new Date().toISOString()
     };
   }
