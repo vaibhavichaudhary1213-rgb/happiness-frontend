@@ -1,211 +1,291 @@
-// components/AdminDashboard.js
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { forestCabinTheme as theme } from '../styles/forestCabinTheme';
-import { userTracking } from '../services/userTracking';
-import { Download, Users, Activity, Calendar, TrendingUp } from 'lucide-react';
+import API from '../services/api'; // Your configured axios instance
 
 function AdminDashboard() {
-  const [stats, setStats] = useState(null);
-  const [events, setEvents] = useState([]);
-  const [timeRange, setTimeRange] = useState('all');
+  const [stats, setStats] = useState({
+    uniqueUsers: 0,
+    activitiesCompleted: 0,
+    totalSessions: 0,
+    signups: 0,
+    loading: true,
+    error: null
+  });
 
   useEffect(() => {
-    loadData();
+    fetchAdminStats();
   }, []);
 
-  const loadData = () => {
-    const allData = userTracking.getAllTrackingData();
-    setEvents(allData);
-    setStats(userTracking.getUserStats());
-  };
+  const fetchAdminStats = async () => {
+    try {
+      setStats(prev => ({ ...prev, loading: true }));
+      
+      // Get all unique users from different endpoints
+      const [
+        moodData,
+        wellnessData,
+        growthData,
+        healthData
+      ] = await Promise.allSettled([
+        API.get('/analytics/').catch(() => ({ value: { data: [] } })),
+        API.get('/wellness/happiness/weekly/all').catch(() => ({ value: { data: [] } })),
+        API.get('/growth/joy/triggers/all').catch(() => ({ value: { data: [] } })),
+        API.get('/health').catch(() => ({ value: { data: {} } }))
+      ]);
 
-  const handleDownload = () => {
-    userTracking.downloadCSV();
-  };
+      // Collect all unique user IDs
+      const userSet = new Set();
 
-  const getFilteredEvents = () => {
-    if (timeRange === 'all') return events;
-    
-    const now = new Date();
-    const cutoff = new Date();
-    
-    if (timeRange === 'today') {
-      cutoff.setHours(0, 0, 0, 0);
-    } else if (timeRange === 'week') {
-      cutoff.setDate(now.getDate() - 7);
-    } else if (timeRange === 'month') {
-      cutoff.setMonth(now.getMonth() - 1);
+      // Add users from mood analytics
+      if (moodData.status === 'fulfilled' && moodData.value.data) {
+        moodData.value.data.forEach(entry => {
+          if (entry.user_id) userSet.add(entry.user_id);
+        });
+      }
+
+      // Add users from wellness data
+      if (wellnessData.status === 'fulfilled' && wellnessData.value.data) {
+        wellnessData.value.data.forEach(entry => {
+          if (entry.user_id) userSet.add(entry.user_id);
+        });
+      }
+
+      // Add users from growth data
+      if (growthData.status === 'fulfilled' && growthData.value.data) {
+        growthData.value.data.forEach(entry => {
+          if (entry.user_id) userSet.add(entry.user_id);
+        });
+      }
+
+      // Calculate activities count (mood entries + habit tracks + growth responses)
+      const activitiesCount = await calculateActivitiesCount();
+
+      // Get total sessions (from localStorage + API)
+      const sessionsCount = await getTotalSessions();
+
+      setStats({
+        uniqueUsers: userSet.size,
+        activitiesCompleted: activitiesCount,
+        totalSessions: sessionsCount,
+        signups: userSet.size, // Same as unique users for now
+        loading: false,
+        error: null
+      });
+
+    } catch (error) {
+      console.error('Error fetching admin stats:', error);
+      setStats(prev => ({
+        ...prev,
+        loading: false,
+        error: 'Failed to load statistics'
+      }));
     }
-    
-    return events.filter(event => new Date(event.timestamp) >= cutoff);
   };
 
-  if (!stats) {
-    return <div>Loading...</div>;
+  const calculateActivitiesCount = async () => {
+    try {
+      // Count various activities
+      const [
+        moodEntries,
+        habitTracks,
+        joyResponses,
+        gratitudeEntries
+      ] = await Promise.allSettled([
+        API.get('/analytics/').catch(() => ({ value: { data: [] } })),
+        API.get('/wellness/habits/streak/all').catch(() => ({ value: { data: [] } })),
+        API.get('/growth/joy/answers/all').catch(() => ({ value: { data: [] } })),
+        API.get('/growth/gratitude/recent/all').catch(() => ({ value: { data: [] } }))
+      ]);
+
+      let total = 0;
+
+      if (moodEntries.status === 'fulfilled' && moodEntries.value.data) {
+        total += moodEntries.value.data.length;
+      }
+      if (habitTracks.status === 'fulfilled' && habitTracks.value.data) {
+        total += habitTracks.value.data.length;
+      }
+      if (joyResponses.status === 'fulfilled' && joyResponses.value.data) {
+        total += joyResponses.value.data.length;
+      }
+      if (gratitudeEntries.status === 'fulfilled' && gratitudeEntries.value.data) {
+        total += gratitudeEntries.value.data.length;
+      }
+
+      return total;
+    } catch (error) {
+      console.error('Error calculating activities:', error);
+      return 0;
+    }
+  };
+
+  const getTotalSessions = async () => {
+    // Get sessions from localStorage (client-side tracking)
+    const localSessions = parseInt(localStorage.getItem('totalSessions') || '0');
+    
+    // Try to get from analytics health endpoint
+    try {
+      const response = await API.get('/analytics/health');
+      const apiSessions = response.data?.totalSessions || 0;
+      return Math.max(localSessions, apiSessions);
+    } catch {
+      return localSessions;
+    }
+  };
+
+  // Track new session on component mount
+  useEffect(() => {
+    const trackSession = () => {
+      const sessions = parseInt(localStorage.getItem('totalSessions') || '0') + 1;
+      localStorage.setItem('totalSessions', sessions.toString());
+    };
+    trackSession();
+  }, []);
+
+  if (stats.loading) {
+    return (
+      <div style={{
+        padding: '2rem',
+        color: '#8B5CF6',
+        textAlign: 'center'
+      }}>
+        Loading dashboard...
+      </div>
+    );
+  }
+
+  if (stats.error) {
+    return (
+      <div style={{
+        padding: '2rem',
+        color: '#EF4444',
+        textAlign: 'center'
+      }}>
+        {stats.error}
+      </div>
+    );
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      style={{
-        background: theme.colors.background.paper,
-        borderRadius: theme.borderRadius['2xl'],
-        padding: theme.spacing.xl,
-        maxWidth: '1200px',
-        margin: '0 auto'
-      }}
-    >
-      <h1 style={{ fontSize: theme.typography.h2, marginBottom: theme.spacing.xl }}>
-        📊 Admin Dashboard
-      </h1>
+    <div className="admin-dashboard" style={{
+      padding: '2rem',
+      backgroundColor: '#1A1F2A',
+      borderRadius: '16px',
+      margin: '1rem',
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+    }}>
+      <h2 style={{
+        color: '#8B5CF6',
+        fontSize: '1.8rem',
+        marginBottom: '2rem',
+        borderBottom: '2px solid #8B5CF6',
+        paddingBottom: '0.5rem'
+      }}>
+        Admin Dashboard
+      </h2>
 
-      {/* Stats Cards */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-        gap: theme.spacing.lg,
-        marginBottom: theme.spacing.xl
+        gap: '1.5rem'
       }}>
-        <div style={statCardStyle}>
-          <Users size={24} color={theme.colors.secondary.main} />
-          <div style={{ fontSize: theme.typography.h2, fontWeight: 700 }}>
-            {stats.uniqueUsers}
+        {/* Unique Users Card */}
+        <div style={cardStyle}>
+          <div style={{ ...iconStyle, backgroundColor: '#8B5CF620' }}>
+            👥
           </div>
-          <div style={{ color: theme.colors.text.secondary }}>Unique Users</div>
+          <div style={valueStyle}>{stats.uniqueUsers}</div>
+          <div style={labelStyle}>Unique Users</div>
         </div>
 
-        <div style={statCardStyle}>
-          <Activity size={24} color={theme.colors.primary.main} />
-          <div style={{ fontSize: theme.typography.h2, fontWeight: 700 }}>
-            {stats.totalActivities}
+        {/* Activities Card */}
+        <div style={cardStyle}>
+          <div style={{ ...iconStyle, backgroundColor: '#10B98120' }}>
+            📊
           </div>
-          <div style={{ color: theme.colors.text.secondary }}>Activities Completed</div>
+          <div style={valueStyle}>{stats.activitiesCompleted}</div>
+          <div style={labelStyle}>Activities Completed</div>
         </div>
 
-        <div style={statCardStyle}>
-          <Calendar size={24} color={theme.colors.accent.honey} />
-          <div style={{ fontSize: theme.typography.h2, fontWeight: 700 }}>
-            {stats.totalSessions}
+        {/* Total Sessions Card */}
+        <div style={cardStyle}>
+          <div style={{ ...iconStyle, backgroundColor: '#F59E0B20' }}>
+            🔄
           </div>
-          <div style={{ color: theme.colors.text.secondary }}>Total Sessions</div>
+          <div style={valueStyle}>{stats.totalSessions}</div>
+          <div style={labelStyle}>Total Sessions</div>
         </div>
 
-        <div style={statCardStyle}>
-          <TrendingUp size={24} color={theme.colors.accent.lavender} />
-          <div style={{ fontSize: theme.typography.h2, fontWeight: 700 }}>
-            {stats.totalSignups}
+        {/* Sign-ups Card */}
+        <div style={cardStyle}>
+          <div style={{ ...iconStyle, backgroundColor: '#EC489920' }}>
+            📝
           </div>
-          <div style={{ color: theme.colors.text.secondary }}>Sign-ups</div>
+          <div style={valueStyle}>{stats.signups}</div>
+          <div style={labelStyle}>Sign-ups</div>
         </div>
       </div>
 
-      {/* Controls */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: theme.spacing.lg
-      }}>
-        <div style={{ display: 'flex', gap: theme.spacing.sm }}>
-          {['all', 'today', 'week', 'month'].map(range => (
-            <button
-              key={range}
-              onClick={() => setTimeRange(range)}
-              style={{
-                padding: `${theme.spacing.xs} ${theme.spacing.lg}`,
-                background: timeRange === range ? theme.colors.primary.main : 'transparent',
-                border: `1px solid ${theme.colors.neutral[400]}`,
-                borderRadius: theme.borderRadius.full,
-                color: timeRange === range ? '#FFFFFF' : theme.colors.text.primary,
-                cursor: 'pointer',
-                textTransform: 'capitalize'
-              }}
-            >
-              {range}
-            </button>
-          ))}
-        </div>
-
-        <button
-          onClick={handleDownload}
-          style={{
-            padding: `${theme.spacing.sm} ${theme.spacing.lg}`,
-            background: theme.colors.secondary.main,
-            border: 'none',
-            borderRadius: theme.borderRadius.full,
-            color: '#FFFFFF',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: theme.spacing.sm
-          }}
-        >
-          <Download size={16} />
-          Download CSV
-        </button>
-      </div>
-
-      {/* Events Table */}
-      <div style={{
-        background: theme.colors.background.warm,
-        borderRadius: theme.borderRadius.lg,
-        padding: theme.spacing.lg,
-        overflowX: 'auto'
-      }}>
-        <table style={{
-          width: '100%',
-          borderCollapse: 'collapse'
-        }}>
-          <thead>
-            <tr style={{ borderBottom: `1px solid ${theme.colors.neutral[400]}` }}>
-              <th style={{ padding: theme.spacing.sm, textAlign: 'left' }}>Time</th>
-              <th style={{ padding: theme.spacing.sm, textAlign: 'left' }}>User</th>
-              <th style={{ padding: theme.spacing.sm, textAlign: 'left' }}>Action</th>
-              <th style={{ padding: theme.spacing.sm, textAlign: 'left' }}>Details</th>
-            </tr>
-          </thead>
-          <tbody>
-            {getFilteredEvents().reverse().map((event, index) => (
-              <tr key={index} style={{ borderBottom: `1px solid ${theme.colors.neutral[300]}` }}>
-                <td style={{ padding: theme.spacing.sm }}>
-                  {new Date(event.timestamp).toLocaleString()}
-                </td>
-                <td style={{ padding: theme.spacing.sm }}>
-                  {event.name || event.userId?.substring(0, 8)}...
-                </td>
-                <td style={{ padding: theme.spacing.sm }}>
-                  {event.action || (event.activityName ? 'activity' : 'event')}
-                </td>
-                <td style={{ padding: theme.spacing.sm }}>
-                  {event.activityName || event.personality || JSON.stringify(event.details)}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Last Updated */}
-      <div style={{
-        marginTop: theme.spacing.lg,
-        textAlign: 'right',
-        color: theme.colors.text.muted,
-        fontSize: theme.typography.tiny
-      }}>
-        Last updated: {new Date(stats.lastUpdated).toLocaleString()}
-      </div>
-    </motion.div>
+      {/* Refresh Button */}
+      <button
+        onClick={fetchAdminStats}
+        style={{
+          marginTop: '2rem',
+          padding: '0.75rem 1.5rem',
+          backgroundColor: '#8B5CF6',
+          color: 'white',
+          border: 'none',
+          borderRadius: '8px',
+          cursor: 'pointer',
+          fontSize: '1rem',
+          fontWeight: '500',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem',
+          marginLeft: 'auto'
+        }}
+      >
+        <span>🔄</span> Refresh Data
+      </button>
+    </div>
   );
 }
 
-const statCardStyle = {
-  background: theme.colors.background.warm,
-  borderRadius: theme.borderRadius.lg,
-  padding: theme.spacing.lg,
+// Styles
+const cardStyle = {
+  backgroundColor: '#2A2F3A',
+  borderRadius: '12px',
+  padding: '1.5rem',
   textAlign: 'center',
-  border: `1px solid ${theme.colors.neutral[400]}`
+  transition: 'transform 0.2s',
+  cursor: 'pointer',
+  ':hover': {
+    transform: 'translateY(-4px)'
+  }
+};
+
+const iconStyle = {
+  width: '48px',
+  height: '48px',
+  borderRadius: '50%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  margin: '0 auto 1rem',
+  fontSize: '24px'
+};
+
+const valueStyle = {
+  fontSize: '2.5rem',
+  fontWeight: 'bold',
+  color: '#8B5CF6',
+  marginBottom: '0.5rem'
+};
+
+const labelStyle = {
+  fontSize: '0.9rem',
+  color: '#A0A8B8',
+  textTransform: 'uppercase',
+  letterSpacing: '0.5px'
 };
 
 export default AdminDashboard;

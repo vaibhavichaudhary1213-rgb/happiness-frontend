@@ -26,86 +26,85 @@ function Sidebar({ activeTab, onTabChange, onExpandChange, userData, onUpdateUse
   console.log("Admin tab present:", menuItems.some(item => item.id === "admin"));
 
   // Avatars reflecting diverse mental states and personalities
-  // Avatars reflecting diverse mental states and personalities
-const personalityOptions = [
-  { 
-    id: 1, 
-    name: "The Optimist", 
-    color: "#F59E0B", 
-    emoji: "☀️", 
-    description: "This pain wouldn't be forevermore" 
-  },
-  { 
-    id: 2, 
-    name: "The Poet", 
-    color: "#8B5CF6", 
-    emoji: "🌙", 
-    description: "All is fair in love and poetry" 
-  },
-  { 
-    id: 3, 
-    name: "The Overthinker", 
-    color: "#6B7280", 
-    emoji: "☁️", 
-    description: "I wake in the night, I pace like a ghost" 
-  },
-  { 
-    id: 4, 
-    name: "The Healer", 
-    color: "#EC4899", 
-    emoji: "🌸", 
-    description: "Turning pain into poetry" 
-  },
-  { 
-    id: 5, 
-    name: "The Grounded One", 
-    color: "#10B981", 
-    emoji: "🍃", 
-    description: "Right here where I stand is holy ground" 
-  },
-  { 
-    id: 6, 
-    name: "The Dreamer", 
-    color: "#FCD34D", 
-    emoji: "✨", 
-    description: "I will go to the secret gardens in my mind" 
-  },
-  { 
-    id: 7, 
-    name: "The Empath", 
-    color: "#F97316", 
-    emoji: "💝", 
-    description: "Too soft for all of it" 
-  },
-  { 
-    id: 8, 
-    name: "The Escapist", 
-    color: "#8B4513", 
-    emoji: "☕", 
-    description: "They nicknamed me 'The Bolter'" 
-  },
-  { 
-    id: 9, 
-    name: "The Survivor", 
-    color: "#FBBF24", 
-    emoji: "😊", 
-    description: "Long story short, I survived" 
-  },
-  { 
-    id: 10, 
-    name: "The Curious Soul", 
-    color: "#9CA3AF", 
-    emoji: "🐱", 
-    description: "Curious time gave me no compasses, gave me no signs" 
-  },
-  { 
-    id: 11, 
-    name: "The Free Spirit", 
-    color: "#60A5FA", 
-    emoji: "🐦", 
-    description: "Happy, free, confused and lonely in the best way" 
-  }
-];
+  const personalityOptions = [
+    { 
+      id: 1, 
+      name: "The Optimist", 
+      color: "#F59E0B", 
+      emoji: "☀️", 
+      description: "This pain wouldn't be forevermore" 
+    },
+    { 
+      id: 2, 
+      name: "The Poet", 
+      color: "#8B5CF6", 
+      emoji: "🌙", 
+      description: "All is fair in love and poetry" 
+    },
+    { 
+      id: 3, 
+      name: "The Overthinker", 
+      color: "#6B7280", 
+      emoji: "☁️", 
+      description: "I wake in the night, I pace like a ghost" 
+    },
+    { 
+      id: 4, 
+      name: "The Healer", 
+      color: "#EC4899", 
+      emoji: "🌸", 
+      description: "Turning pain into poetry" 
+    },
+    { 
+      id: 5, 
+      name: "The Grounded One", 
+      color: "#10B981", 
+      emoji: "🍃", 
+      description: "Right here where I stand is holy ground" 
+    },
+    { 
+      id: 6, 
+      name: "The Dreamer", 
+      color: "#FCD34D", 
+      emoji: "✨", 
+      description: "I will go to the secret gardens in my mind" 
+    },
+    { 
+      id: 7, 
+      name: "The Empath", 
+      color: "#F97316", 
+      emoji: "💝", 
+      description: "Too soft for all of it" 
+    },
+    { 
+      id: 8, 
+      name: "The Escapist", 
+      color: "#8B4513", 
+      emoji: "☕", 
+      description: "They nicknamed me 'The Bolter'" 
+    },
+    { 
+      id: 9, 
+      name: "The Survivor", 
+      color: "#FBBF24", 
+      emoji: "😊", 
+      description: "Long story short, I survived" 
+    },
+    { 
+      id: 10, 
+      name: "The Curious Soul", 
+      color: "#9CA3AF", 
+      emoji: "🐱", 
+      description: "Curious time gave me no compasses, gave me no signs" 
+    },
+    { 
+      id: 11, 
+      name: "The Free Spirit", 
+      color: "#60A5FA", 
+      emoji: "🐦", 
+      description: "Happy, free, confused and lonely in the best way" 
+    }
+  ];
 
   const toggleSidebar = () => {
     const newExpanded = !isExpanded;
@@ -175,7 +174,7 @@ const personalityOptions = [
               margin: 0,
               fontSize: "1.5rem",
               fontWeight: 600,
-              color: theme?.colors?.text?.primary || "#E8E0E0",
+              color: "#805AD5", // Changed to deep purple
               letterSpacing: "-0.02em"
             }}>
               Ivy Insight
@@ -183,7 +182,7 @@ const personalityOptions = [
             <p style={{
               margin: "4px 0 0",
               fontSize: theme?.typography?.tiny || "0.75rem",
-              color: theme?.colors?.text?.secondary || "#C0B8C0"
+              color: "#9F7AEA" // Changed to medium purple
             }}>
               your forest sanctuary
             </p>
@@ -205,7 +204,7 @@ const personalityOptions = [
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            color: theme?.colors?.text?.primary || "#E8E0E0",
+            color: "#805AD5", // Changed to deep purple
           }}
         >
           {isExpanded ? "←" : "→"}
@@ -217,7 +216,7 @@ const personalityOptions = [
         padding: theme?.spacing?.lg || "1.5rem",
         marginTop: theme?.spacing?.md || "1rem",
         overflowY: "auto",
-        maxHeight: "calc(100vh - 200px)"
+        maxHeight: "calc(100vh - 180px)", // Increased space for admin dashboard
       }}>
         {menuItems.map((item, index) => {
           const isActive = activeTab === item.id;
@@ -241,7 +240,7 @@ const personalityOptions = [
                 display: "flex",
                 alignItems: "center",
                 gap: theme?.spacing?.lg || "1.5rem",
-                color: isActive ? (theme?.colors?.text?.primary || "#E8E0E0") : (theme?.colors?.text?.secondary || "#C0B8C0"),
+                color: isActive ? "#805AD5" : "#9F7AEA", // Changed to purple shades
                 border: isActive ? `1px solid ${item.color}60` : "1px solid transparent",
               }}
             >
@@ -273,36 +272,39 @@ const personalityOptions = [
         })}
       </div>
 
-      {/* User Profile Section */}
+      {/* User Profile Section - SHORTENED */}
       <div style={{
         position: "absolute",
         bottom: 0,
         left: 0,
         right: 0,
-        padding: theme?.spacing?.lg || "1.5rem",
+        padding: "12px", // Reduced from 1.5rem
         borderTop: `1px solid ${theme?.colors?.neutral?.[400] || "#4A4A4A"}`,
-        background: theme?.colors?.background?.warm || "#1A2525"
+        background: theme?.colors?.background?.warm || "#1A2525",
+        maxHeight: "85px", // Fixed height to shorten profile box
+        overflow: "hidden", // Hide overflow
+        zIndex: 10
       }}>
-        {/* Profile info */}
+        {/* Profile info - COMPACT */}
         <div
           style={{
             display: "flex",
             alignItems: "center",
-            gap: theme?.spacing?.lg || "1.5rem",
+            gap: "12px", // Reduced gap
             cursor: "pointer",
-            marginBottom: isExpanded ? theme?.spacing?.sm || "0.75rem" : 0
+            marginBottom: isExpanded ? "4px" : 0 // Reduced margin
           }}
           onClick={() => isExpanded && setShowPersonalitySelector(true)}
         >
           <div style={{
-            width: 40,
-            height: 40,
+            width: 36, // Smaller avatar
+            height: 36, // Smaller avatar
             borderRadius: "9999px",
             background: `linear-gradient(135deg, ${avatar.color}20, ${avatar.color}40)`,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '20px',
+            fontSize: '18px', // Smaller emoji
             border: `2px solid ${avatar.color}`,
           }}>
             {avatar.emoji}
@@ -312,55 +314,45 @@ const personalityOptions = [
             <div style={{ flex: 1 }}>
               <div style={{ 
                 fontWeight: 600,
-                color: theme?.colors?.text?.primary || "#E8E0E0",
-                fontSize: theme?.typography?.small || "0.875rem"
+                color: "#805AD5", // Changed to deep purple
+                fontSize: "0.8rem" // Smaller text
               }}>
                 {userName}
               </div>
               <div style={{ 
-                fontSize: theme?.typography?.tiny || "0.75rem",
-                color: theme?.colors?.text?.secondary || "#C0B8C0",
+                fontSize: "0.7rem", // Smaller text
+                color: "#9F7AEA", // Medium purple
               }}>
-                {avatar.name} · {userAge} years
+                {avatar.name} · {userAge}
               </div>
-              <div style={{
-                fontSize: theme?.typography?.tiny || "0.75rem",
-                color: avatar.color,
-                marginTop: 2,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 4
-              }}>
-                <span>Click to change</span>
-                <span style={{ fontSize: '10px' }}>✎</span>
-              </div>
+              {/* Removed "Click to change" text to save space */}
             </div>
           )}
         </div>
 
-        {/* Logout Button */}
+        {/* Logout Button - COMPACT */}
         {isExpanded && onLogout && (
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={onLogout}
             style={{
-              padding: `${theme?.spacing?.xs || "0.5rem"} ${theme?.spacing?.sm || "0.75rem"}`,
+              padding: "4px 8px", // Smaller padding
               background: 'transparent',
               border: `1px solid ${theme?.colors?.neutral?.[400] || "#4A4A4A"}`,
               borderRadius: "9999px",
-              color: theme?.colors?.text?.secondary || "#C0B8C0",
-              fontSize: theme?.typography?.tiny || "0.75rem",
+              color: "#6B46C1", // Very deep purple
+              fontSize: "0.7rem", // Smaller text
               cursor: 'pointer',
               width: '100%',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: theme?.spacing?.xs || "0.5rem",
-              marginTop: theme?.spacing?.sm || "0.75rem",
+              gap: "4px", // Smaller gap
+              marginTop: "4px", // Smaller margin
             }}
           >
-            <span>🚪</span> Return to Welcome
+            <span style={{ fontSize: "0.8rem" }}>🚪</span> Logout
           </motion.button>
         )}
       </div>
@@ -405,7 +397,7 @@ const personalityOptions = [
             >
               <h3 style={{
                 fontSize: theme?.typography?.h3 || "1.5rem",
-                color: theme?.colors?.text?.primary || "#E8E0E0",
+                color: "#805AD5", // Changed to deep purple
                 marginBottom: theme?.spacing?.sm || "0.75rem",
                 textAlign: 'center'
               }}>
@@ -413,7 +405,7 @@ const personalityOptions = [
               </h3>
               <p style={{
                 fontSize: theme?.typography?.small || "0.875rem",
-                color: theme?.colors?.text?.secondary || "#C0B8C0",
+                color: "#9F7AEA", // Changed to medium purple
                 marginBottom: theme?.spacing?.xl || "2rem",
                 textAlign: 'center'
               }}>
@@ -464,13 +456,13 @@ const personalityOptions = [
                     <div style={{
                       fontSize: theme?.typography?.small || "0.875rem",
                       fontWeight: 600,
-                      color: theme?.colors?.text?.primary || "#E8E0E0"
+                      color: "#805AD5" // Changed to deep purple
                     }}>
                       {personality.name}
                     </div>
                     <div style={{
                       fontSize: theme?.typography?.tiny || "0.75rem",
-                      color: theme?.colors?.text?.secondary || "#C0B8C0"
+                      color: "#9F7AEA" // Changed to medium purple
                     }}>
                       {personality.description}
                     </div>
@@ -488,7 +480,7 @@ const personalityOptions = [
                   background: theme?.colors?.neutral?.[300] || "#3A3F3A",
                   border: 'none',
                   borderRadius: "9999px",
-                  color: theme?.colors?.text?.primary || "#E8E0E0",
+                  color: "#FFFFFF", // White for contrast
                   fontSize: theme?.typography?.body || "1rem",
                   cursor: 'pointer',
                   width: '100%'
