@@ -13,7 +13,7 @@ import { forestCabinTheme } from "./styles/forestCabinTheme.js";
 import "./styles/global.css";
 import AdminDashboard from './components/AdminDashboard.js';
 import { trackSession } from './services/adminApi';
-import userTracking from './services/userTracking';
+import { userTracking } from './services/userTracking';
 
 useEffect(() => {
   // Track when user visits
