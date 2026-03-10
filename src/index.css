@@ -1,13 +1,394 @@
-body {
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&display=swap');
+
+* {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #FAF1EA;  /* Warm cream background */
+  color: #4A3A32;  /* Warm brown text */
+  line-height: 1.6;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom Scrollbar - Warm Theme */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F5E9E4;  /* Soft peach tint */
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #E6B8A2;  /* Warm terracotta */
+  border-radius: 20px;
+  border: 2px solid #F5E9E4;
+  transition: all 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #C48A6B;  /* Deeper terracotta */
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Selection Styling */
+::selection {
+  background: #FEE3D4;  /* Soft peach */
+  color: #8B5E4C;  /* Warm brown */
+}
+
+::-moz-selection {
+  background: #FEE3D4;
+  color: #8B5E4C;
+}
+
+/* Focus Styles for Accessibility */
+:focus-visible {
+  outline: 3px solid #FED7C1;  /* Warm peach */
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Animations */
+@keyframes gentleFloat {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes softPulse {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.02); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeInUp {
+  from { 
+    opacity: 0; 
+    transform: translateY(15px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes fadeInDown {
+  from { 
+    opacity: 0; 
+    transform: translateY(-15px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes slideInRight {
+  from { 
+    opacity: 0; 
+    transform: translateX(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateX(0); 
+  }
+}
+
+@keyframes slideInLeft {
+  from { 
+    opacity: 0; 
+    transform: translateX(-20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateX(0); 
+  }
+}
+
+@keyframes gentleShake {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(2deg); }
+  75% { transform: rotate(-2deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes heartbeat {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.1); }
+  35% { transform: scale(1); }
+  45% { transform: scale(1.05); }
+  55% { transform: scale(1); }
+  100% { transform: scale(1); }
+}
+
+/* Animation Classes */
+.fade-in-up {
+  animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fade-in-down {
+  animation: fadeInDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slide-in-right {
+  animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slide-in-left {
+  animation: slideInLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gentle-float {
+  animation: gentleFloat 3s ease-in-out infinite;
+}
+
+.soft-pulse {
+  animation: softPulse 2s ease-in-out infinite;
+}
+
+.gentle-shake:hover {
+  animation: gentleShake 0.3s ease;
+}
+
+.heartbeat {
+  animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+.fade-in {
+  animation: fadeInUp 0.4s ease;
+}
+
+.slide-in {
+  animation: slideInLeft 0.4s ease;
+}
+
+/* Glassmorphism Effect - Warm Version */
+.glass {
+  background: rgba(255, 247, 242, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(230, 184, 162, 0.2);
+  box-shadow: 0 8px 32px rgba(166, 138, 120, 0.08);
+}
+
+.glass-warm {
+  background: rgba(254, 215, 193, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(230, 184, 162, 0.3);
+  box-shadow: 0 4px 20px rgba(196, 138, 107, 0.1);
+}
+
+/* Card Styles */
+.cozy-card {
+  background: white;
+  border-radius: 24px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(166, 138, 120, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(230, 184, 162, 0.1);
+}
+
+.cozy-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(166, 138, 120, 0.15);
+  border-color: rgba(230, 184, 162, 0.3);
+}
+
+/* Hover Effects */
+.hover-scale {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-scale:hover {
+  transform: scale(1.03);
+}
+
+.hover-lift {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(166, 138, 120, 0.12);
+}
+
+/* Loading Spinner - Warm Theme */
+.spinner {
+  border: 3px solid #F5E9E4;
+  border-top: 3px solid #E6B8A2;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  animation: spin 1s linear infinite;
+}
+
+.spinner-warm {
+  border: 3px solid #FEE3D4;
+  border-top: 3px solid #C48A6B;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 0.8s linear infinite;
+}
+
+.spinner-small {
+  width: 24px;
+  height: 24px;
+  border-width: 2px;
+}
+
+.spinner-large {
+  width: 48px;
+  height: 48px;
+  border-width: 4px;
+}
+
+/* Gradient Text */
+.gradient-text-warm {
+  background: linear-gradient(135deg, #C48A6B 0%, #E6B8A2 50%, #FED7C1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 200% 200%;
+  animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Warm Dividers */
+.divider-warm {
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    #FED7C1, 
+    #E6B8A2, 
+    #FED7C1, 
+    transparent
+  );
+  margin: 1.5rem 0;
+  border: none;
+}
+
+.divider-dotted {
+  border: none;
+  border-top: 2px dotted #E6B8A2;
+  opacity: 0.5;
+  margin: 1.5rem 0;
+}
+
+/* Decorative Elements */
+.decorative-circle {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #FED7C1, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.decorative-line {
+  height: 100%;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, #E6B8A2, transparent);
+}
+
+/* Typography Utilities */
+.text-warm-primary {
+  color: #4A3A32;
+}
+
+.text-warm-secondary {
+  color: #7F6B5F;
+}
+
+.text-warm-muted {
+  color: #B09B8F;
+}
+
+.text-warm-accent {
+  color: #C48A6B;
+}
+
+/* Background Utilities */
+.bg-warm {
+  background-color: #FAF1EA;
+}
+
+.bg-warm-paper {
+  background-color: #FFFFFF;
+}
+
+.bg-warm-soft {
+  background-color: #FCF5F0;
+}
+
+.bg-warm-gradient {
+  background: linear-gradient(135deg, #FAF1EA 0%, #FCF5F0 100%);
+}
+
+/* Responsive Utilities */
+@media (max-width: 768px) {
+  .cozy-card {
+    padding: 1rem;
+    border-radius: 20px;
+  }
+  
+  .glass {
+    backdrop-filter: blur(8px);
+  }
+}
+
+@media (max-width: 480px) {
+  .cozy-card {
+    padding: 0.875rem;
+    border-radius: 16px;
+  }
+}
+
+/* Print Styles */
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
+  
+  .no-print {
+    display: none;
+  }
+}
+
+/* Dark Mode Support (if needed) */
+@media (prefers-color-scheme: dark) {
+  .cozy-card {
+    background: #2A2A2A;
+    border-color: #404040;
+  }
+  
+  .text-warm-primary {
+    color: #E0E0E0;
+  }
 }

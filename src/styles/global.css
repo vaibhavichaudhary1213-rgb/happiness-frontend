@@ -1,0 +1,397 @@
+/* styles/global.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #0A1A1A;  /* Deep forest background */
+  min-height: 100vh;
+  color: #E8E0E0;  /* Soft white text */
+}
+
+/* Custom Scrollbar - Whispering Woods Theme */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1A2A2A;  /* Forest green */
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2A254A;  /* Deep lavender */
+  border-radius: 20px;
+  border: 2px solid #1A2A2A;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #1A1540;  /* Very dark lavender */
+}
+
+/* Smooth Animations */
+@keyframes whisperFloat {
+  0% { transform: translateY(0px); opacity: 0.3; }
+  50% { transform: translateY(-10px); opacity: 0.6; }
+  100% { transform: translateY(0px); opacity: 0.3; }
+}
+
+@keyframes softPulse {
+  0% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.02); }
+  100% { opacity: 0.7; transform: scale(1); }
+}
+
+@keyframes lavenderSway {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(1deg); }
+  75% { transform: rotate(-1deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.4s ease;
+}
+
+.slide-in-right {
+  animation: slideInRight 0.4s ease;
+}
+
+.slide-in-left {
+  animation: slideInLeft 0.4s ease;
+}
+
+.whisper-float {
+  animation: whisperFloat 6s ease-in-out infinite;
+}
+
+.soft-pulse {
+  animation: softPulse 3s ease-in-out infinite;
+}
+
+.lavender-sway {
+  animation: lavenderSway 5s ease-in-out infinite;
+}
+
+/* Glassmorphism - Whispering Woods */
+.glass-whisper {
+  background: rgba(26, 42, 42, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(42, 37, 74, 0.4);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+}
+
+/* Whispering Woods Card */
+.whisper-card {
+  background: #1A2A2A;
+  border-radius: 24px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(42, 37, 74, 0.3);
+  color: #E8E0E0;
+}
+
+.whisper-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);
+  border-color: rgba(42, 37, 74, 0.6);
+}
+
+/* Loading Spinner */
+.spinner-whisper {
+  border: 3px solid #2A3A3A;
+  border-top: 3px solid #2A254A;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Text Selection */
+::selection {
+  background: #2A254A;
+  color: #E8E0E0;
+}
+
+::-moz-selection {
+  background: #2A254A;
+  color: #E8E0E0;
+}
+
+/* Focus Styles */
+:focus-visible {
+  outline: 3px solid #2A254A;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Gradient Text */
+.gradient-text-whisper {
+  background: linear-gradient(135deg, #1A3A3A 0%, #2A254A 50%, #4A3A6A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 200% 200%;
+  animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Divider */
+.divider-whisper {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #1A3A3A, #2A254A, #1A3A3A, transparent);
+  margin: 1.5rem 0;
+  border: none;
+}
+
+/* Linen Texture */
+.whisper-linen-texture {
+  background-color: #0A1A1A;
+  background-image: 
+    repeating-linear-gradient(45deg, rgba(42, 37, 74, 0.1) 0px, rgba(42, 37, 74, 0.1) 2px, 
+                              transparent 2px, transparent 8px),
+    repeating-linear-gradient(135deg, rgba(42, 37, 74, 0.1) 0px, rgba(42, 37, 74, 0.1) 2px, 
+                              transparent 2px, transparent 8px);
+  background-size: 20px 20px;
+}
+
+/* Whisper Glow Overlay */
+.whisper-glow {
+  position: relative;
+}
+
+.whisper-glow::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 300px;
+  background: radial-gradient(circle at 50% 0%, 
+    rgba(42, 37, 74, 0.2) 0%, 
+    transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Utility Classes */
+.text-whisper-primary {
+  color: #E8E0E0;
+}
+
+.text-whisper-secondary {
+  color: #C0B8C0;
+}
+
+.text-whisper-lavender {
+  color: #B8A8D8;
+}
+
+.text-whisper-dark-purple {
+  color: #C0B0E0;
+  font-weight: 500;
+}
+
+.bg-whisper-primary {
+  background-color: #0A1A1A;
+}
+
+.bg-whisper-paper {
+  background-color: #1A2A2A;
+}
+
+.bg-whisper-lavender {
+  background-color: #2A254A;
+}
+
+.bg-whisper-soft-lavender {
+  background-color: #3A2A5A;
+}
+
+.border-whisper {
+  border-color: #1A3A3A;
+}
+
+.border-whisper-lavender {
+  border-color: #2A254A;
+}
+
+/* Input styles */
+.whisper-input {
+  background: #1A2A2A;
+  border: 1px solid #2A3A3A;
+  color: #E8E0E0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.whisper-input:focus {
+  outline: none;
+  border-color: #2A254A;
+  box-shadow: 0 0 0 2px rgba(42, 37, 74, 0.3);
+}
+
+.whisper-input::placeholder {
+  color: #8A8A8A;
+}
+
+/* Button styles */
+.whisper-button-primary {
+  background: #1A3A3A;
+  color: #E8E0E0;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.whisper-button-primary:hover {
+  background: #0A2A2A;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+.whisper-button-lavender {
+  background: #2A254A;
+  color: #E8E0E0;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.whisper-button-lavender:hover {
+  background: #1A1540;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(42, 37, 74, 0.5);
+}
+
+/* Card accents */
+.whisper-card-lavender {
+  border-left: 4px solid #2A254A;
+  background: #1A2A2A;
+}
+
+.whisper-card-forest {
+  border-left: 4px solid #1A3A3A;
+  background: #1A2A2A;
+}
+
+/* Badges */
+.lavender-badge {
+  background: #2A254A;
+  color: #E8E0E0;
+  padding: 4px 12px;
+  border-radius: 30px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.forest-badge {
+  background: #1A3A3A;
+  color: #E8E0E0;
+  padding: 4px 12px;
+  border-radius: 30px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Headers */
+h1, h2, h3, h4, h5, h6 {
+  color: #E8E0E0;
+}
+
+/* Stats */
+.stat-value {
+  color: #B8A8D8;
+  font-weight: 700;
+  font-size: 2rem;
+}
+
+.stat-label {
+  color: #8A8A8A;
+  font-size: 0.875rem;
+}
+
+/* Progress bars */
+.progress-bar-bg {
+  background: #2A3A3A;
+}
+
+.progress-bar-fill {
+  background: #2A254A;
+}
+
+.progress-bar-fill-forest {
+  background: #1A3A3A;
+}
+
+/* Quote styling */
+.whisper-quote {
+  background: rgba(26, 58, 58, 0.2);
+  border-left: 4px solid #2A254A;
+  padding: 1.5rem;
+  border-radius: 16px;
+  margin: 1.5rem 0;
+  color: #E8E0E0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .whisper-card {
+    padding: 1rem;
+    border-radius: 20px;
+  }
+  
+  .glass-whisper {
+    backdrop-filter: blur(8px);
+  }
+}
+
+@media (max-width: 480px) {
+  .whisper-card {
+    padding: 0.875rem;
+    border-radius: 16px;
+  }
+}
