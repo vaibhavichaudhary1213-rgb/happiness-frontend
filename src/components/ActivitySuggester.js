@@ -4,7 +4,7 @@ import { suggestActivity, completeActivity } from "../services/activityApi.js";
 import { forestCabinTheme as theme } from "../styles/forestCabinTheme.js";
 import { saveFavorites, getRewards } from "../services/rewardsApi.js";
 import { trackActivity } from '../services/adminApi';
-import userTracking from '../services/userTracking';
+import { userTracking } from '../services/userTracking';
 
 // Icons
 import { 

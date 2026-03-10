@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { forestCabinTheme as theme } from "../styles/forestCabinTheme.js";
-import { userTracking } from '../services/userTracking.js';
+import { userTracking } from '../services/userTracking';
 import { trackUser } from '../services/adminApi';
 
 // Icons
