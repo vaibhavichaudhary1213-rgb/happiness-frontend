@@ -1,10 +1,13 @@
+// services/wellnessApi.js
 import axios from "axios";
 
-const ACTIVITY_API = axios.create({
-  baseURL: "https://insight-ivy-api.onrender.com",
+// Use consistent naming - either ACTIVITY_API or rename to API
+const API = axios.create({
+  baseURL: process.env.REACT_APP_API_URL || "https://insight-ivy-api.onrender.com",
   timeout: 10000
 });
-// Add auth token if needed
+
+// Add auth token if needed (commented out for now)
 // API.interceptors.request.use(config => {
 //   const token = localStorage.getItem('token');
 //   if (token) config.headers.Authorization = `Bearer ${token}`;
@@ -216,4 +219,25 @@ export const getKindnessStats = async (userId) => {
     console.error("Kindness stats error:", error);
     throw error;
   }
+};
+
+// Export all functions as a default object
+export default {
+  trackSleep,
+  trackExercise,
+  trackWater,
+  getWellnessScore,
+  addHabit,
+  trackHabit,
+  getHabitStreak,
+  getCelebrations,
+  logMood,
+  getWeeklyMood,
+  getMoodTrends,
+  getJoyQuestion,
+  saveJoyAnswer,
+  getStudentPrompt,
+  getKindnessChallenge,
+  completeKindnessChallenge,
+  getKindnessStats
 };
