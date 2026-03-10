@@ -11,9 +11,9 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #0A1A1A;  /* Deep forest background */
+  background: #0A1A1A;
   min-height: 100vh;
-  color: #9F7AEA;  /* Changed from #E8E0E0 to medium purple - darker and visible */
+  color: #9F7AEA;
 }
 
 /* Custom Scrollbar - Whispering Woods Theme */
@@ -23,18 +23,18 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #1A2A2A;  /* Forest green */
+  background: #1A2A2A;
   border-radius: 20px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2A254A;  /* Deep lavender */
+  background: #2A254A;
   border-radius: 20px;
   border: 2px solid #1A2A2A;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #1A1540;  /* Very dark lavender */
+  background: #1A1540;
 }
 
 /* Smooth Animations */
@@ -113,7 +113,7 @@ body {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   transition: all 0.3s ease;
   border: 1px solid rgba(42, 37, 74, 0.3);
-  color: #9F7AEA;  /* Changed from #E8E0E0 to purple */
+  color: #9F7AEA;
 }
 
 .whisper-card:hover {
@@ -140,7 +140,7 @@ body {
 /* Text Selection */
 ::selection {
   background: #2A254A;
-  color: #FFFFFF;  /* Changed to white for better contrast on purple */
+  color: #FFFFFF;
 }
 
 ::-moz-selection {
@@ -211,25 +211,24 @@ body {
 
 /* Utility Classes - UPDATED with darker purples */
 .text-whisper-primary {
-  color: #9F7AEA;  /* Changed from #E8E0E0 to medium purple */
+  color: #9F7AEA;
 }
 
 .text-whisper-secondary {
-  color: #B794F4;  /* Changed from #C0B8C0 to lighter but visible purple */
+  color: #B794F4;
 }
 
 .text-whisper-lavender {
-  color: #B8A8D8;  /* Keeping as is */
+  color: #B8A8D8;
 }
 
 .text-whisper-dark-purple {
-  color: #805AD5;  /* Changed from #C0B0E0 to much darker purple */
+  color: #805AD5;
   font-weight: 500;
 }
 
-/* Add new darker purple utility */
 .text-whisper-deep-purple {
-  color: #6B46C1;  /* Very deep purple - maximum visibility */
+  color: #6B46C1;
   font-weight: 600;
 }
 
@@ -257,11 +256,182 @@ body {
   border-color: #2A254A;
 }
 
+/* ========== RECENT REFLECTIONS - DARK PURPLE TEXT ========== */
+.recent-reflections,
+.reflections-container,
+.reflections-card,
+.reflections-list {
+  color: #6B46C1;
+}
+
+.recent-reflections h2,
+.recent-reflections h3,
+.reflections-container h2,
+.reflections-card h2,
+.reflections-header {
+  color: #805AD5 !important;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.reflection-item,
+.reflection-entry {
+  border-bottom: 1px solid rgba(107, 70, 193, 0.2);
+  padding: 12px 0;
+  margin-bottom: 8px;
+}
+
+.reflection-question,
+.reflection-prompt {
+  color: #805AD5 !important;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.reflection-answer,
+.reflection-response {
+  color: #9F7AEA !important;
+  font-size: 0.95rem;
+  margin: 4px 0;
+  line-height: 1.5;
+}
+
+.reflection-date,
+.reflection-timestamp {
+  color: #B794F4 !important;
+  font-size: 0.8rem;
+  text-align: right;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+/* Empty state for reflections */
+.no-reflections,
+.empty-reflections {
+  color: #9F7AEA !important;
+  text-align: center;
+  padding: 20px;
+  font-style: italic;
+  background: rgba(107, 70, 193, 0.05);
+  border-radius: 12px;
+}
+
+/* ========== LEARNING GOALS - DARK PURPLE TEXT ========== */
+.learning-goals,
+.goals-container,
+.goals-card,
+.learning-goals-section {
+  color: #6B46C1;
+}
+
+.learning-goals h2,
+.learning-goals h3,
+.goals-container h2,
+.goals-card h2,
+.goals-header {
+  color: #805AD5 !important;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.goals-list,
+.learning-goals ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.goal-item,
+.learning-goals li {
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(107, 70, 193, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #805AD5 !important;
+}
+
+/* Checkbox styling */
+.goal-checkbox,
+.learning-goals input[type="checkbox"] {
+  accent-color: #6B46C1;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.goal-text,
+.goal-label {
+  color: #805AD5 !important;
+  flex: 1;
+  font-size: 0.95rem;
+}
+
+/* Completed goal styling */
+.goal-item.completed .goal-text,
+.learning-goals li.completed .goal-label {
+  color: #B794F4 !important;
+  text-decoration: line-through;
+  opacity: 0.8;
+}
+
+/* Progress section */
+.goals-progress,
+.learning-progress {
+  margin-top: 20px;
+  padding: 16px;
+  background: rgba(107, 70, 193, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(107, 70, 193, 0.15);
+}
+
+.progress-text,
+.learning-progress p {
+  color: #805AD5 !important;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.progress-bar-bg {
+  background: #2A3A3A;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.progress-bar-fill {
+  background: #6B46C1;
+  height: 8px;
+  border-radius: 4px;
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+.progress-percentage {
+  color: #9F7AEA !important;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* Empty state for goals */
+.no-goals,
+.empty-goals {
+  color: #9F7AEA !important;
+  text-align: center;
+  padding: 20px;
+  font-style: italic;
+  background: rgba(107, 70, 193, 0.05);
+  border-radius: 12px;
+}
+
 /* Input styles */
 .whisper-input {
   background: #1A2A2A;
   border: 1px solid #2A3A3A;
-  color: #9F7AEA;  /* Changed from #E8E0E0 to purple */
+  color: #9F7AEA;
   padding: 12px 16px;
   border-radius: 12px;
   font-size: 1rem;
@@ -275,11 +445,11 @@ body {
 }
 
 .whisper-input::placeholder {
-  color: #6B46C1;  /* Changed from #8A8A8A to darker purple placeholder */
+  color: #6B46C1;
   opacity: 0.6;
 }
 
-/* Button styles - KEEP ORIGINAL COLORS (unchanged) */
+/* Button styles - KEEP ORIGINAL COLORS */
 .whisper-button-primary {
   background: #1A3A3A;
   color: #E8E0E0;
@@ -318,19 +488,19 @@ body {
 .whisper-card-lavender {
   border-left: 4px solid #2A254A;
   background: #1A2A2A;
-  color: #9F7AEA;  /* Added purple text */
+  color: #9F7AEA;
 }
 
 .whisper-card-forest {
   border-left: 4px solid #1A3A3A;
   background: #1A2A2A;
-  color: #9F7AEA;  /* Added purple text */
+  color: #9F7AEA;
 }
 
 /* Badges */
 .lavender-badge {
   background: #2A254A;
-  color: #FFFFFF;  /* Changed from #E8E0E0 to white for better contrast */
+  color: #FFFFFF;
   padding: 4px 12px;
   border-radius: 30px;
   font-size: 0.875rem;
@@ -339,28 +509,28 @@ body {
 
 .forest-badge {
   background: #1A3A3A;
-  color: #FFFFFF;  /* Changed from #E8E0E0 to white for better contrast */
+  color: #FFFFFF;
   padding: 4px 12px;
   border-radius: 30px;
   font-size: 0.875rem;
   font-weight: 500;
 }
 
-/* Headers - UPDATED to purple */
+/* Headers */
 h1, h2, h3, h4, h5, h6 {
-  color: #805AD5;  /* Changed from #E8E0E0 to deep purple */
+  color: #805AD5;
   font-weight: 600;
 }
 
-/* Stats - UPDATED */
+/* Stats */
 .stat-value {
-  color: #6B46C1;  /* Changed from #B8A8D8 to very deep purple */
+  color: #6B46C1;
   font-weight: 700;
   font-size: 2rem;
 }
 
 .stat-label {
-  color: #9F7AEA;  /* Changed from #8A8A8A to medium purple */
+  color: #9F7AEA;
   font-size: 0.875rem;
 }
 
@@ -384,10 +554,10 @@ h1, h2, h3, h4, h5, h6 {
   padding: 1.5rem;
   border-radius: 16px;
   margin: 1.5rem 0;
-  color: #9F7AEA;  /* Changed from #E8E0E0 to purple */
+  color: #9F7AEA;
 }
 
-/* Add specific admin dashboard text overrides */
+/* Admin dashboard overrides */
 .admin-dashboard .stat-value,
 .admin-dashboard .stat-label,
 .admin-dashboard h1,
@@ -395,7 +565,7 @@ h1, h2, h3, h4, h5, h6 {
 .admin-dashboard h3,
 .admin-dashboard p,
 .admin-dashboard span {
-  color: #6B46C1 !important;  /* Force deep purple for admin dashboard */
+  color: #6B46C1 !important;
 }
 
 /* Responsive */
@@ -407,6 +577,11 @@ h1, h2, h3, h4, h5, h6 {
   
   .glass-whisper {
     backdrop-filter: blur(8px);
+  }
+  
+  .reflection-item,
+  .goal-item {
+    padding: 8px 0;
   }
 }
 
