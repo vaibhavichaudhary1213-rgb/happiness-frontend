@@ -29,7 +29,7 @@ function WelcomePage({ onWelcomeComplete }) {
 
   // Default personality for fallback
   const defaultPersonality = {
-    id: 2,
+    id: 2, 
     icon: Moon,
     name: "The Poet",
     color: "#8B5CF6",

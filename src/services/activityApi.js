@@ -3,7 +3,7 @@ import axios from "axios";
 
 // Person 2's backend
 const ACTIVITY_API = axios.create({
-  baseURL: "http://127.0.0.1:8002",
+  baseURL: "https://insight-ivy-api.onrender.com",
   timeout: 10000
 });
 
