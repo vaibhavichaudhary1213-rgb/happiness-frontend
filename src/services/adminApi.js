@@ -1,45 +1,38 @@
 // services/adminApi.js
 import { userTracking } from './userTracking';
 
-// Mock data for fallback
-const MOCK_DATA = {
-  reflections: [
-    { id: 1, question: "What made you smile today?", answer: "Seeing a puppy at the park", date: "Mar 9" },
-    { id: 2, question: "What's a small pleasure you enjoyed?", answer: "Morning coffee in silence", date: "Mar 8" },
-    { id: 3, question: "What memory warms your heart?", answer: "Childhood beach trips with family", date: "Mar 7" }
-  ],
-  goals: [
-    { id: 1, text: "Read 12 books this year", completed: false },
-    { id: 2, text: "Learn meditation basics", completed: false },
-    { id: 3, text: "Practice daily journaling", completed: false }
-  ]
-};
-
-// Get admin stats - NOW WITH REAL UNIQUE DEVICES
+// Get admin stats from REAL user tracking data
 export const getAdminStats = async () => {
-  console.log("📊 Reading real user data...");
+  console.log("📊 Reading real user data from tracking...");
   
   const stats = userTracking.getUserStats();
   
   return {
-    uniqueUsers: stats.uniqueDevices, // This is now REAL unique devices/browsers
-    activitiesCompleted: stats.totalActivities,
-    totalSessions: stats.totalSessions,
-    signups: stats.totalSignups // This is actual sign-ups
+    uniqueUsers: stats.uniqueDevices || 0,
+    activitiesCompleted: stats.totalActivities || 0,
+    totalSessions: stats.totalSessions || 0,
+    signups: stats.totalSignups || 0
   };
 };
 
-// Get recent reflections
+// Get recent reflections from localStorage
 export const getRecentReflections = async () => {
-  return { reflections: MOCK_DATA.reflections };
+  // Get reflections from tracking data or localStorage
+  const reflections = JSON.parse(localStorage.getItem('ivyInsightReflections') || '[]');
+  
+  // If no reflections yet, return empty array (no mock data)
+  return { 
+    reflections: reflections.slice(-5).reverse() // Last 5, newest first
+  };
 };
 
-// Get learning goals
+// Get learning goals from localStorage
 export const getLearningGoals = async () => {
-  return { goals: MOCK_DATA.goals };
+  const goals = JSON.parse(localStorage.getItem('ivyInsightGoals') || '[]');
+  return { goals };
 };
 
-// Add goal
+// Add a new goal
 export const addGoal = async (goalText) => {
   const goals = JSON.parse(localStorage.getItem('ivyInsightGoals') || '[]');
   const newGoal = {
@@ -53,7 +46,7 @@ export const addGoal = async (goalText) => {
   return { success: true, goal: newGoal };
 };
 
-// Toggle goal
+// Toggle goal completion status
 export const toggleGoal = async (goalId) => {
   const goals = JSON.parse(localStorage.getItem('ivyInsightGoals') || '[]');
   const updatedGoals = goals.map(g => 
@@ -61,4 +54,58 @@ export const toggleGoal = async (goalId) => {
   );
   localStorage.setItem('ivyInsightGoals', JSON.stringify(updatedGoals));
   return { success: true };
+};
+
+// Save a reflection
+export const saveReflection = async (question, answer) => {
+  const reflections = JSON.parse(localStorage.getItem('ivyInsightReflections') || '[]');
+  const newReflection = {
+    id: Date.now(),
+    question,
+    answer,
+    date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+    timestamp: new Date().toISOString()
+  };
+  reflections.push(newReflection);
+  localStorage.setItem('ivyInsightReflections', JSON.stringify(reflections));
+  return { success: true, reflection: newReflection };
+};
+
+// Get combined dashboard data
+export const getDashboardData = async () => {
+  const [stats, reflections, goals] = await Promise.all([
+    getAdminStats(),
+    getRecentReflections(),
+    getLearningGoals()
+  ]);
+  
+  return {
+    stats,
+    reflections: reflections.reflections,
+    goals: goals.goals
+  };
+};
+
+// Track user activity (wrapper for userTracking)
+export const trackUserActivity = (activityName, duration) => {
+  const userId = userTracking.getUserId();
+  userTracking.trackActivity(userId, activityName, duration, true);
+};
+
+// Track page view / session
+export const trackPageView = () => {
+  userTracking.trackSession('page_view');
+};
+
+// Export all functions
+export default {
+  getAdminStats,
+  getRecentReflections,
+  getLearningGoals,
+  addGoal,
+  toggleGoal,
+  saveReflection,
+  getDashboardData,
+  trackUserActivity,
+  trackPageView
 };
