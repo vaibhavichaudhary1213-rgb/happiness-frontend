@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL:  "https://insight-ivy-api.onrender.com",
-  timeout: 10000
+  baseURL: "https://insight-ivy-api.onrender.com",
+  timeout: 15000 // Consider increasing timeout to 15 seconds for free tier wake-up
 });
 
 // Request interceptor for loading states
@@ -38,7 +38,7 @@ API.interceptors.response.use(
 
 export const sendMoodMessage = async (text, intensity = 3, userId = "user_1") => {
   try {
-    console.log("📤 Sending message:", text);
+    console.log("📤 Sending message to /mood/analyze:", text);
     
     const response = await API.post("/mood/analyze", {
       user_id: userId,
@@ -47,15 +47,35 @@ export const sendMoodMessage = async (text, intensity = 3, userId = "user_1") =>
     });
 
     console.log("✅ Received response:", response.data);
-    
     return response.data;
 
   } catch (error) {
-    console.error("❌ API Error:", error.message);
+    // More specific error logging
+    if (error.code === 'ECONNABORTED') {
+      console.error("❌ Request timeout - backend might be waking up");
+    } else if (error.response?.status === 422) {
+      console.error("❌ Data format error:", error.response.data);
+    } else {
+      console.error("❌ API Error:", error.message);
+    }
+    
+    // Keep your friendly fallback
     return { 
       error: "Connection problem",
       chatbot_response: "I'm having trouble connecting. Please try again in a moment."
     };
+  }
+};
+
+// Add a simple health check function
+export const checkBackendHealth = async () => {
+  try {
+    // The root endpoint (/) works and returns the API info
+    const response = await API.get('/');
+    return { online: true, data: response.data };
+  } catch (error) {
+    console.warn("Backend health check failed:", error.message);
+    return { online: false };
   }
 };
 
