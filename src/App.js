@@ -12,7 +12,6 @@ import WelcomePage from "./components/WelcomePage.js";
 import { forestCabinTheme } from "./styles/forestCabinTheme.js";
 import "./styles/global.css";
 import AdminDashboard from './components/AdminDashboard.js';
-import { trackSession } from './services/adminApi';
 import { userTracking } from './services/userTracking';
 
 function App() {
@@ -24,11 +23,11 @@ function App() {
   const [showWelcome, setShowWelcome] = useState(true); // Always start with true
   const [userData, setUserData] = useState(null);
   
+  // ✅ FIXED: Track when user visits
   useEffect(() => {
-  // Track when user visits
-  const userId = userTracking.getUserId();
-  trackSession(userId);
-}, []);
+    const userId = userTracking.getUserId();
+    userTracking.trackSession('app_visit');  // Use userTracking directly
+  }, []);
 
   // Use Whispering Woods & Lavender theme
   const theme = forestCabinTheme;
