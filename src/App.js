@@ -13,6 +13,8 @@ import { forestCabinTheme } from "./styles/forestCabinTheme.js";
 import "./styles/global.css";
 import AdminDashboard from './components/AdminDashboard.js';
 import { userTracking } from './services/userTracking';
+import PublicQRPage from './components/PublicQRPage';
+import QRCodeDisplay from './components/QRCodeDisplay';
 
 function App() {
   const [activeTab, setActiveTab] = useState("chat");
@@ -20,13 +22,16 @@ function App() {
   const [lastEmotion, setLastEmotion] = useState(null);
   const [lastIntensity, setLastIntensity] = useState(3);
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
-  const [showWelcome, setShowWelcome] = useState(true); // Always start with true
+  const [showWelcome, setShowWelcome] = useState(true);
   const [userData, setUserData] = useState(null);
   
-  // ✅ FIXED: Track when user visits
+  // Check if this is the public QR page
+  const isPublicQRPage = window.location.pathname === '/public/qr';
+  
+  // ✅ Track when user visits main app
   useEffect(() => {
     const userId = userTracking.getUserId();
-    userTracking.trackSession('app_visit');  // Use userTracking directly
+    userTracking.trackSession('app_visit');
   }, []);
 
   // Use Whispering Woods & Lavender theme
@@ -41,9 +46,6 @@ function App() {
     emoji: "🌙",
     description: "Finding beauty in every moment"
   };
-
-  // REMOVED: useEffect that checks localStorage
-  // We want welcome page to show every time
 
   const handleEmotionDetected = (emotion, intensity) => {
     setLastEmotion(emotion);
@@ -70,34 +72,40 @@ function App() {
     setUserData(null);
   };
 
-  // In App.js - renderContent function
-const renderContent = () => {
-  switch(activeTab) {
-    case "chat":
-      return <ChatBox 
-        onEmotionDetected={handleEmotionDetected} 
-        userData={userData}
-        theme={theme}
-      />;
-    case "wellness":
-      return <WellnessDashboard userId={userId} userData={userData} theme={theme} />;
-    case "habits":
-      return <HabitTracker userId={userId} userData={userData} theme={theme} />;
-    case "growth":
-      return <GrowthTracker userId={userId} userData={userData} theme={theme} />;
-    case "mood":
-      return <MoodGraph userId={userId} userData={userData} theme={theme} />;
-    case "admin":
-      return <AdminDashboard />; // Make sure this case exists
-    default:
-      return <ChatBox 
-        onEmotionDetected={handleEmotionDetected}
-        userData={userData}
-        theme={theme}
-      />;
-  }
-};
+  // Render content based on active tab
+  const renderContent = () => {
+    switch(activeTab) {
+      case "chat":
+        return <ChatBox 
+          onEmotionDetected={handleEmotionDetected} 
+          userData={userData}
+          theme={theme}
+        />;
+      case "wellness":
+        return <WellnessDashboard userId={userId} userData={userData} theme={theme} />;
+      case "habits":
+        return <HabitTracker userId={userId} userData={userData} theme={theme} />;
+      case "growth":
+        return <GrowthTracker userId={userId} userData={userData} theme={theme} />;
+      case "mood":
+        return <MoodGraph userId={userId} userData={userData} theme={theme} />;
+      case "admin":
+        return <AdminDashboard />;
+      default:
+        return <ChatBox 
+          onEmotionDetected={handleEmotionDetected}
+          userData={userData}
+          theme={theme}
+        />;
+    }
+  };
 
+  // If this is the public QR page, render it without any app wrapper
+  if (isPublicQRPage) {
+    return <PublicQRPage />;
+  }
+
+  // Otherwise render the main app
   return (
     <div 
       className="whisper-linen-texture whisper-glow" 
@@ -144,7 +152,7 @@ const renderContent = () => {
                 userData={userData}
                 onUpdateUser={handleUpdateUser}
                 theme={theme}
-                onLogout={handleLogout} // Pass logout function
+                onLogout={handleLogout}
               />
               
               <motion.main

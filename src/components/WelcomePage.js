@@ -381,14 +381,6 @@ function WelcomePage({ onWelcomeComplete }) {
                   "There is happiness, past the blood and bruise, 
                   past the curses and cries, I believe there is happiness"
                 </p>
-                <div style={{
-                  marginTop: theme.spacing.md,
-                  display: 'flex',
-                  justifyContent: 'flex-end',
-                  color: theme.colors.secondary.main
-                }}>
-                  <span>— Ivy Insight</span>
-                </div>
               </div>
               
               <p style={{

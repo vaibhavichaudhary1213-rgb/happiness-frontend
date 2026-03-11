@@ -78,12 +78,45 @@ class UserTracking {
       name: userData.name,
       age: userData.age,
       personality: userData.personality || 'Not selected',
+      source: userData.source || 'direct', // Track where user came from
       timestamp: new Date().toISOString(),
       action: 'signup'
     };
 
     this.saveToLocalStorage(trackingData);
-    console.log('📝 Signup tracked:', { name: userData.name, deviceId: this.deviceId });
+    console.log('📝 Signup tracked:', { 
+      name: userData.name, 
+      deviceId: this.deviceId,
+      source: trackingData.source 
+    });
+    
+    return trackingData;
+  }
+
+  // Track QR code scan
+  async trackQRScan(scanData = {}) {
+    const userId = this.getUserId();
+    
+    const trackingData = {
+      sessionId: this.sessionId,
+      deviceId: this.deviceId,
+      userId: userId,
+      action: 'qr_scan',
+      source: 'qr_code',
+      timestamp: new Date().toISOString(),
+      details: {
+        ...scanData,
+        userAgent: navigator.userAgent,
+        platform: navigator.platform,
+        language: navigator.language
+      }
+    };
+
+    this.saveToLocalStorage(trackingData);
+    console.log('📱 QR Scan tracked from device:', this.deviceId);
+    
+    // Also track as a special event for analytics
+    this.trackActivity(userId, 'qr_code_scan', 0, true, { source: 'qr_code' });
     
     return trackingData;
   }
@@ -95,7 +128,10 @@ class UserTracking {
       deviceId: this.deviceId,
       userId: this.getUserId(),
       action: action,
-      details: details,
+      details: {
+        ...details,
+        source: details.source || this.getEntrySource() // Track if came from QR
+      },
       timestamp: new Date().toISOString()
     };
 
@@ -103,8 +139,20 @@ class UserTracking {
     return trackingData;
   }
 
-  // Track activity completion
-  async trackActivity(userId, activityName, duration, completed) {
+  // Get entry source (QR, direct, etc.)
+  getEntrySource() {
+    // Check if user came from QR code
+    const cameFromQR = localStorage.getItem('cameFromQR');
+    if (cameFromQR === 'true') {
+      // Clear it after reading so it doesn't persist forever
+      localStorage.removeItem('cameFromQR');
+      return 'qr_code';
+    }
+    return 'direct';
+  }
+
+  // Track activity completion (updated with source tracking)
+  async trackActivity(userId, activityName, duration, completed, metadata = {}) {
     const trackingData = {
       userId: userId,
       deviceId: this.deviceId,
@@ -112,7 +160,8 @@ class UserTracking {
       duration: duration,
       completed: completed,
       timestamp: new Date().toISOString(),
-      sessionId: this.sessionId
+      sessionId: this.sessionId,
+      source: metadata.source || this.getEntrySource()
     };
 
     this.saveToLocalStorage(trackingData);
@@ -167,15 +216,36 @@ class UserTracking {
     }
   }
 
-  // Get sign-ups count
+  // Get sign-ups count (with source breakdown)
   getSignupsCount() {
     const data = this.getAllTrackingData();
     const signups = data.filter(item => item.action === 'signup');
     
     // Get unique user IDs from signups
     const uniqueUsers = new Set(signups.map(s => s.userId));
+    
+    // Get source breakdown
+    const sourceBreakdown = {};
+    signups.forEach(s => {
+      const source = s.source || 'direct';
+      sourceBreakdown[source] = (sourceBreakdown[source] || 0) + 1;
+    });
+    
     console.log('📊 Signups:', signups.length, 'Unique users:', uniqueUsers.size);
+    console.log('📊 Signup sources:', sourceBreakdown);
+    
     return uniqueUsers.size;
+  }
+
+  // Get QR scan count
+  getQRScanCount() {
+    const data = this.getAllTrackingData();
+    const qrScans = data.filter(item => 
+      item.action === 'qr_scan' || 
+      (item.activityName === 'qr_code_scan')
+    );
+    console.log('📊 QR Scans:', qrScans.length);
+    return qrScans.length;
   }
 
   // Get activities count
@@ -194,7 +264,7 @@ class UserTracking {
     return sessions.size;
   }
 
-  // Get user statistics
+  // Get user statistics (updated with QR stats)
   getUserStats() {
     console.log('📊 Calculating stats...');
     
@@ -203,11 +273,43 @@ class UserTracking {
       totalSignups: this.getSignupsCount(),
       totalActivities: this.getActivitiesCount(),
       totalSessions: this.getSessionsCount(),
+      qrScans: this.getQRScanCount(),
       lastUpdated: new Date().toISOString()
     };
     
     console.log('📊 Final stats:', stats);
     return stats;
+  }
+
+  // Get QR-specific analytics
+  getQRAnalytics() {
+    const data = this.getAllTrackingData();
+    
+    // Get all QR-related events
+    const qrEvents = data.filter(item => 
+      item.action === 'qr_scan' || 
+      item.source === 'qr_code' ||
+      item.activityName === 'qr_code_scan'
+    );
+    
+    // Get unique devices from QR
+    const uniqueDevicesFromQR = new Set(
+      qrEvents.map(e => e.deviceId)
+    );
+    
+    // Get signups that came from QR
+    const qrSignups = data.filter(item => 
+      item.action === 'signup' && item.source === 'qr_code'
+    );
+    
+    return {
+      totalQRScans: qrEvents.length,
+      uniqueDevicesFromQR: uniqueDevicesFromQR.size,
+      qrSignups: qrSignups.length,
+      qrConversionRate: qrEvents.length > 0 
+        ? Math.round((qrSignups.length / qrEvents.length) * 100) 
+        : 0
+    };
   }
 
   // Clear all data (for testing)
@@ -216,6 +318,7 @@ class UserTracking {
     localStorage.removeItem('ivyInsightDevices');
     localStorage.removeItem('ivyInsightDeviceId');
     localStorage.removeItem('ivyInsightUserId');
+    localStorage.removeItem('cameFromQR');
     console.log('🧹 All tracking data cleared');
   }
 }
