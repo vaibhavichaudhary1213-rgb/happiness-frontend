@@ -133,19 +133,20 @@ function ChatBox({ onEmotionDetected, userData, isPopupOpen }) {
       setMessages(prev => [...prev, botReply]);
       
       // Wait 8 seconds before showing activities
-      setTimeout(() => {
-        const activityPrompt = {
-          id: Date.now() + 2,
-          sender: "bot",
-          text: "Let's try some activities which might help with how you're feeling. 🌱",
-          timestamp: new Date(),
-          type: "activity-prompt"
-        };
-        setMessages(prev => [...prev, activityPrompt]);
-        
-        // Show activities immediately after the prompt
-        setShowSuggestions(true);
-      }, 8000);
+      // When showing activities initially
+setTimeout(() => {
+  const activityPrompt = {
+    id: Date.now() + 2,
+    sender: "bot",
+    text: "Let's try some activities which might help with how you're feeling. 🌱",
+    timestamp: new Date(),
+    type: "activity-prompt"
+  };
+  setMessages(prev => [...prev, activityPrompt]);
+  
+  // Show activities and NEVER hide them
+  setShowSuggestions(true); // This should never be set to false again
+}, 8000);
 
     } catch (error) {
       setMessages(prev => [...prev, {
@@ -305,36 +306,41 @@ function ChatBox({ onEmotionDetected, userData, isPopupOpen }) {
         zIndex: 1
       }}>
         <AnimatePresence>
-          {messages.map((msg) => (
-            <MessageBubble
-              key={msg.id}
-              message={msg.text}
-              sender={msg.sender}
-              timestamp={msg.timestamp}
-              emotion={msg.emotion}
-              gratitudePrompt={msg.gratitudePrompt}
-              kindnessChallenge={msg.kindnessChallenge}
-            />
-          ))}
+    {/* Activity Suggestions - ALWAYS at the top when visible */}
+    {showSuggestions && lastMoodData && (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        style={{
+          marginTop: theme.spacing.md,
+          marginBottom: theme.spacing.md,
+          order: -1, // This ensures it stays at the top
+          position: 'relative',
+          zIndex: 10
+        }}
+      >
+        <ActivitySuggestions
+          moodData={lastMoodData}
+          onClose={() => {}} // Empty function since we removed close button
+          onActivitySelected={handleActivitySelected}
+          onAddBotMessage={addMessage}
+        />
+      </motion.div>
+    )}
 
-          {showSuggestions && lastMoodData && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              style={{
-                marginTop: theme.spacing.md,
-                marginBottom: theme.spacing.md
-              }}
-            >
-              <ActivitySuggestions
-                moodData={lastMoodData}
-                onClose={() => setShowSuggestions(false)}
-                onActivitySelected={handleActivitySelected}
-                onAddBotMessage={addMessage}
-              />
-            </motion.div>
-          )}
+    {/* All other messages appear below */}
+    {messages.map((msg) => (
+      <MessageBubble
+        key={msg.id}
+        message={msg.text}
+        sender={msg.sender}
+        timestamp={msg.timestamp}
+        emotion={msg.emotion}
+        gratitudePrompt={msg.gratitudePrompt}
+        kindnessChallenge={msg.kindnessChallenge}
+      />
+    ))}
 
           {/* Activity confirmation appears AFTER the activities */}
           {activityConfirmation && !showSuggestions && (
