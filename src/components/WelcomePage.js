@@ -217,17 +217,83 @@ function WelcomePage({ onWelcomeComplete }) {
         overflow: 'auto'
       }}
     >
-      {/* Optional: Add subtle moon glow effect */}
+      {/* Moon - positioned more to the right */}
+      <div style={{
+        position: 'absolute',
+        top: '12%',
+        right: '8%', // Moved more to the right (was 15%)
+        width: '100px',
+        height: '100px',
+        background: 'radial-gradient(circle at 30% 30%, #fff5e6, #e6d5b8)',
+        borderRadius: '50%',
+        boxShadow: '0 0 60px rgba(255, 245, 230, 0.4)',
+        animation: 'moonGlow 5s ease-in-out infinite',
+        zIndex: 5
+      }}>
+        {/* Moon craters for detail */}
+        <div style={{
+          position: 'absolute',
+          top: '25%',
+          left: '30%',
+          width: '15px',
+          height: '15px',
+          background: 'rgba(200, 180, 150, 0.3)',
+          borderRadius: '50%'
+        }} />
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          left: '55%',
+          width: '10px',
+          height: '10px',
+          background: 'rgba(200, 180, 150, 0.3)',
+          borderRadius: '50%'
+        }} />
+      </div>
+
+      {/* Moon glow effect */}
       <div style={{
         position: 'absolute',
         top: '10%',
-        right: '15%',
-        width: '150px',
-        height: '150px',
-        background: 'radial-gradient(circle, rgba(255,245,230,0.1) 0%, transparent 70%)',
+        right: '5%',
+        width: '200px',
+        height: '200px',
+        background: 'radial-gradient(circle, rgba(255,245,230,0.15) 0%, transparent 70%)',
         borderRadius: '50%',
-        pointerEvents: 'none'
+        pointerEvents: 'none',
+        zIndex: 4
       }} />
+
+      {/* Stars - scattered across the sky */}
+      {[...Array(30)].map((_, i) => (
+        <div
+          key={i}
+          style={{
+            position: 'absolute',
+            top: `${Math.random() * 40}%`,
+            left: `${Math.random() * 100}%`,
+            width: '2px',
+            height: '2px',
+            background: 'white',
+            borderRadius: '50%',
+            opacity: Math.random() * 0.7 + 0.3,
+            animation: `twinkle ${Math.random() * 3 + 2}s ease-in-out infinite`,
+            zIndex: 3
+          }}
+        />
+      ))}
+
+      {/* Add the keyframe animation for twinkling stars */}
+      <style jsx>{`
+        @keyframes twinkle {
+          0%, 100% { opacity: 0.2; transform: scale(1); }
+          50% { opacity: 1; transform: scale(1.2); }
+        }
+        @keyframes moonGlow {
+          0%, 100% { box-shadow: 0 0 60px rgba(255, 245, 230, 0.4); }
+          50% { box-shadow: 0 0 80px rgba(255, 245, 230, 0.6); }
+        }
+      `}</style>
 
       {/* Centered Content Container */}
       <motion.div
