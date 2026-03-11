@@ -26,7 +26,6 @@ function ChatBox({ onEmotionDetected, userData, isPopupOpen }) {
   const [activityConfirmation, setActivityConfirmation] = useState(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
-  const [awaitingFavoritePlace, setAwaitingFavoritePlace] = useState(false);
 
    // ADD THIS HELPER FUNCTION HERE (right after state declarations)
   const addMessage = (text, sender) => {
@@ -69,25 +68,7 @@ function ChatBox({ onEmotionDetected, userData, isPopupOpen }) {
   return () => {
     window.removeEventListener('newBotMessage', handleNewBotMessage);
   };
-}, []);
-
-  useEffect(() => {
-  // Expose the handler globally for ActivitySuggester to use
-  window.handleFavoritePlaceReply = (place) => {
-    // This will be called from ActivitySuggester
-    addMessage(`My favorite place is ${place}`, 'user');
-    
-    // ActivitySuggester will handle generating the response
-  };
-  
-  // Also expose a way to set awaiting state
-  window.setAwaitingFavoritePlace = setAwaitingFavoritePlace;
-  
-  return () => {
-    delete window.handleFavoritePlaceReply;
-    delete window.setAwaitingFavoritePlace;
-  };
-}, []);
+}, []); 
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -174,28 +155,10 @@ setTimeout(() => {
     setActivityConfirmation(confirmationMessage);
   };
 
-  const handleUserReply = async (text) => {
-  if (awaitingFavoritePlace) {
-    // This is a reply to the favorite place question
-    setAwaitingFavoritePlace(false);
-    
-    // Send to ActivitySuggester to handle
-    if (window.handleFavoritePlaceReply) {
-      window.handleFavoritePlaceReply(text);
-    }
-    return true; // Indicates it was handled as favorite place
-  }
-  return false; // Not handled, continue with normal message
-};
-
   const handleKeyPress = (e) => {
   if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault();
-    if (awaitingFavoritePlace) {
-      handleUserReply(input).then(() => setInput(""));
-    } else {
-      handleSend();
-    }
+    handleSend(); // Just call handleSend directly
   }
 };
 
@@ -439,13 +402,8 @@ setTimeout(() => {
           <motion.button
   whileHover={{ scale: 1.05 }}
   whileTap={{ scale: 0.95 }}
-  onClick={() => {
-    if (awaitingFavoritePlace) {
-      handleUserReply(input).then(() => setInput(""));
-    } else {
-      handleSend();
-    }
-  }}
+  onClick={handleSend}  // Change back to just handleSend
+  
   disabled={!input.trim()}
   style={{
     padding: theme.spacing.sm,

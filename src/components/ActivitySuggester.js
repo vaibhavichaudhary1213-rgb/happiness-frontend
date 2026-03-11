@@ -60,8 +60,6 @@ function ActivitySuggestions({ moodData, darkMode, onClose, onActivitySelected, 
   const [answers, setAnswers] = useState([]);
   const [currentAnswerIndex, setCurrentAnswerIndex] = useState(0);
   const [answerInput, setAnswerInput] = useState("");
-  const [showFavoritePlaceQuestion, setShowFavoritePlaceQuestion] = useState(false);
-const [pendingActivityForPlace, setPendingActivityForPlace] = useState(null);
 
   // ADD THE HELPER FUNCTION HERE (right after useState declarations)
   const addBotMessageToChat = (message) => {
@@ -529,88 +527,19 @@ useEffect(() => {
     showCompletionRewards(currentChallenge);
   };
 
-     // 👇 ADD ALL THESE NEW FUNCTIONS HERE
-  const askForFavoritePlace = (activity) => {
-  console.log('🎯 askForFavoritePlace called with:', activity);
-  
-  setPendingActivityForPlace(activity);
-  setShowFavoritePlaceQuestion(true);
-  
-  // Wait a bit before asking for favorite place
-  setTimeout(() => {
-    const questionMessage = "What's your favorite place to visit? It could be a city, a park, a cafe, anywhere that makes you happy! 🌍";
-    addBotMessageToChat(questionMessage);
-    
-    if (window.setAwaitingFavoritePlace) {
-      window.setAwaitingFavoritePlace(true);
-    }
-  }, 1000);
-};
-
-  const handleFavoritePlaceReply = async (place) => {
-    if (!place.trim() || !pendingActivityForPlace) return;
-    
-    // Generate TripAdvisor link
-    const tripAdvisorLink = `https://www.tripadvisor.com/Search?q=${encodeURIComponent(place)}`;
-    
-    // Create encouraging message with link
-    const encouragingMessage = `✨ You have so many beautiful places waiting for you! ✨\n\nHere's what others say about ${place}: ${tripAdvisorLink}\n\nRemember, every journey begins with a dream. You have many wonderful adventures ahead! 🌟`;
-    
-    // Send encouraging message to chat
-    addBotMessageToChat(encouragingMessage);
-    
-    // Now send the helpline + feedback message
-    const helplineNumber = "1800-599-0019";
-    const feedbackFormLink = "https://docs.google.com/forms/d/e/1FAIpQLSdg2eyJJwZEw1UXLYTIH20cSestuHt4aGTLD9TkyJHAwXaIqg/viewform?usp=publish-editor";
-    
-    const supportMessage = `If you ever need someone to talk to, help is always available:\n\n🇮🇳 Tele-MANAS: 14416\n🇮🇳 KIRAN Helpline: 1800-599-0019\n\nWe'd love to hear your feedback to make this app better for you: ${feedbackFormLink}`;
-    
-    addBotMessageToChat(supportMessage);
-    
-    // Reset state
-    setShowFavoritePlaceQuestion(false);
-    setPendingActivityForPlace(null);
-  };
-
   const closePopup = (e) => {
   if (e) {
     e.stopPropagation();
   }
-
-  // DEBUGGING: Check if this is a rewards popup being closed
+  
+  // Keep only the rewards popup closing logic without favorite place
   if (showRewards && rewards) {
-    console.log('🎯 Closing rewards popup', { 
-      showRewards, 
-      rewards,
-      points: rewards?.points,
-      message: rewards?.message
-    });
-    
     const hasShownFirstActivityMessage = localStorage.getItem('firstActivityMessageShown');
-    // 👇 CHANGE THIS LINE - check for EITHER 25 OR 50 points
     const isFirstActivity = rewards?.points === 25 || rewards?.points === 50;
     
-    console.log('🎯 First activity check:', { 
-      hasShownFirstActivityMessage, 
-      isFirstActivity,
-      points: rewards?.points 
-    });
-    
-    // Show message only for first activity completion
     if (!hasShownFirstActivityMessage && isFirstActivity) {
-      console.log('🎯 FIRST ACTIVITY DETECTED! Should show favorite place question');
-      
-      // Call the function to ask for favorite place
-      askForFavoritePlace(selectedActivity);
-      
+      // Don't ask for favorite place anymore
       localStorage.setItem('firstActivityMessageShown', 'true');
-      console.log('🎯 firstActivityMessageShown set in localStorage');
-    } else {
-      console.log('🎯 Not first activity or already shown:', { 
-        hasShown: hasShownFirstActivityMessage, 
-        isFirst: isFirstActivity,
-        points: rewards?.points 
-      });
     }
   }
     
@@ -765,7 +694,7 @@ useEffect(() => {
                 position: 'relative'
               }}
             >
-              
+
               <div style={{ fontSize: '48px', marginBottom: theme.spacing?.md || '1rem', textAlign: 'center' }}>
                 {currentAnswerActivity.emoji}
               </div>
