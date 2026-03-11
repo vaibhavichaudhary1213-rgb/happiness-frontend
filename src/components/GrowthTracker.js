@@ -271,7 +271,7 @@ const handleDeleteGoal = (goalId) => {
     try {
       // Mock data for demonstration
       const mockJoyHistory = [
-        { date: "2024-03-09", question: "What made you smile today?", answer: "Seeing a puppy at the park" },
+        { date: "2024-03-09", question: "What made you smile today?", answer: "Seeing a golden retriever at the park" },
         { date: "2024-03-08", question: "What's a small pleasure you enjoyed?", answer: "Morning coffee in silence" },
         { date: "2024-03-07", question: "What memory warms your heart?", answer: "Childhood beach trips with family" }
       ];
@@ -283,9 +283,9 @@ const handleDeleteGoal = (goalId) => {
       ];
 
       const mockGratitudeEntries = [
-        { id: 1, date: "2024-03-09", entry: "Warm sunshine on my face" },
+        { id: 1, date: "2024-03-09", entry: "Cool breeze on my face" },
         { id: 2, date: "2024-03-09", entry: "Kind message from a friend" },
-        { id: 3, date: "2024-03-08", entry: "Delicious homemade soup" }
+        { id: 3, date: "2024-03-08", entry: "Delicious homemade hot chocolate" }
       ];
 
       const mockAchievements = [

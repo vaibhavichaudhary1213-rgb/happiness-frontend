@@ -27,6 +27,19 @@ function ChatBox({ onEmotionDetected, userData, isPopupOpen }) {
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
+   // ADD THIS HELPER FUNCTION HERE (right after state declarations)
+  const addMessage = (text, sender) => {
+    const newMessage = {
+      id: Date.now(),
+      text: text,
+      sender: sender,
+      timestamp: new Date(),
+      type: "support-message"
+    };
+    setMessages(prev => [...prev, newMessage]);
+  };
+
+
   // Use Forest Cabin theme
   const theme = forestCabinTheme;
 
@@ -34,6 +47,28 @@ function ChatBox({ onEmotionDetected, userData, isPopupOpen }) {
     scrollToBottom();
     inputRef.current?.focus();
   }, [messages]);
+
+  useEffect(() => {
+  // Function to handle new bot messages from ActivitySuggester
+  const handleNewBotMessage = (event) => {
+    addMessage(event.detail, 'bot');
+  };
+
+  // Check localStorage for any pending messages
+  const pendingMessage = localStorage.getItem('pendingBotMessage');
+  if (pendingMessage) {
+    addMessage(pendingMessage, 'bot');
+    localStorage.removeItem('pendingBotMessage');
+  }
+
+  // Listen for custom events
+  window.addEventListener('newBotMessage', handleNewBotMessage);
+
+  // Cleanup
+  return () => {
+    window.removeEventListener('newBotMessage', handleNewBotMessage);
+  };
+}, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

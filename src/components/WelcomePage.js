@@ -208,7 +208,7 @@ function WelcomePage({ onWelcomeComplete }) {
         left: 0,
         right: 0,
         bottom: 0,
-        background: theme.colors.background.main,
+        background: 'linear-gradient(to bottom, #0a1420 0%, #1a2a35 50%, #1e3a2a 100%)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -217,41 +217,17 @@ function WelcomePage({ onWelcomeComplete }) {
         overflow: 'auto'
       }}
     >
-      {/* Decorative floating elements - forest themed */}
+      {/* Optional: Add subtle moon glow effect */}
       <div style={{
         position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
+        top: '10%',
+        right: '15%',
+        width: '150px',
+        height: '150px',
+        background: 'radial-gradient(circle, rgba(255,245,230,0.1) 0%, transparent 70%)',
+        borderRadius: '50%',
         pointerEvents: 'none'
-      }}>
-        {[...Array(20)].map((_, i) => (
-          <motion.div
-            key={i}
-            animate={{
-              y: [0, -30, 0],
-              rotate: [0, 10, -10, 0],
-              opacity: [0.1, 0.3, 0.1]
-            }}
-            transition={{
-              duration: 5 + i,
-              repeat: Infinity,
-              delay: i * 0.3
-            }}
-            style={{
-              position: 'absolute',
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              fontSize: '28px',
-              opacity: 0.2,
-              color: theme.colors.primary.main
-            }}
-          >
-            {['🌲', '🍃', '🌿', '🍂', '🌱', '🍄', '🌳', '🍁'][i % 8]}
-          </motion.div>
-        ))}
-      </div>
+      }} />
 
       {/* Centered Content Container */}
       <motion.div
