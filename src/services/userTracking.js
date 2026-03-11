@@ -1,87 +1,52 @@
 // services/userTracking.js
 
-// User tracking service with improved device fingerprinting
+// User tracking service with proper device fingerprinting
 class UserTracking {
   constructor() {
     this.storageKey = 'ivyInsightTracking';
     this.sessionId = this.generateSessionId();
     this.deviceId = this.getOrCreateDeviceId();
-    
-    // Track this session
-    this.trackSession('app_visit');
   }
 
-  // Generate a simpler but more stable device fingerprint
+  // Generate a truly unique device fingerprint
   generateDeviceFingerprint() {
-    // Use more stable components that don't change
+    // Use multiple components to create a unique fingerprint
     const components = [
       navigator.userAgent,
       navigator.language,
-      // Use screen properties that are more stable
-      window.screen.width,
-      window.screen.height,
-      // Add timezone (stable)
+      window.screen.width + 'x' + window.screen.height,
+      window.screen.colorDepth,
       new Date().getTimezoneOffset(),
-      // Hardware concurrency (stable)
       navigator.hardwareConcurrency || 'unknown',
-      // Platform info
+      navigator.deviceMemory || 'unknown',
       navigator.platform || 'unknown',
-      // Check if cookies enabled (stable)
-      navigator.cookieEnabled,
-      // Simple hash of user agent (more stable)
-      this.hashString(navigator.userAgent)
+      // Add random component to ensure uniqueness
+      Math.random().toString(36).substring(2, 15)
     ];
     
-    // Create a more stable fingerprint
+    // Create a hash
     const fingerprint = components.join('|');
-    return this.hashString(fingerprint).toString();
-  }
-
-  // Simple string hashing function
-  hashString(str) {
     let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    for (let i = 0; i < fingerprint.length; i++) {
+      hash = ((hash << 5) - hash) + fingerprint.charCodeAt(i);
       hash |= 0;
     }
-    return Math.abs(hash);
+    return 'dev_' + Math.abs(hash).toString(36) + '_' + Date.now().toString(36);
   }
 
-  // Get or create device ID with better persistence
+  // Get or create device ID
   getOrCreateDeviceId() {
-    // Try multiple storage methods for better persistence
-    let deviceId = null;
+    // Try to get existing device ID
+    let deviceId = localStorage.getItem('ivyInsightDeviceId');
     
-    // Try localStorage first
-    try {
-      deviceId = localStorage.getItem('ivyInsightDeviceId');
-    } catch (e) {
-      console.log('localStorage not available');
-    }
-    
-    // Try sessionStorage as backup
     if (!deviceId) {
-      try {
-        deviceId = sessionStorage.getItem('ivyInsightDeviceId');
-      } catch (e) {
-        console.log('sessionStorage not available');
-      }
-    }
-    
-    // Generate new if not found
-    if (!deviceId) {
-      deviceId = 'dev_' + this.generateDeviceFingerprint() + '_' + Date.now();
-      
-      // Save to both storages
-      try {
-        localStorage.setItem('ivyInsightDeviceId', deviceId);
-        sessionStorage.setItem('ivyInsightDeviceId', deviceId);
-      } catch (e) {
-        console.log('Could not save device ID');
-      }
+      // Generate new unique device ID
+      deviceId = this.generateDeviceFingerprint();
+      localStorage.setItem('ivyInsightDeviceId', deviceId);
       
       // Track as new device
       this.trackNewDevice(deviceId);
+      console.log('✅ New device created:', deviceId);
     }
     
     return deviceId;
@@ -89,15 +54,11 @@ class UserTracking {
 
   // Track new unique device
   trackNewDevice(deviceId) {
-    try {
-      const devices = JSON.parse(localStorage.getItem('ivyInsightDevices') || '[]');
-      if (!devices.includes(deviceId)) {
-        devices.push(deviceId);
-        localStorage.setItem('ivyInsightDevices', JSON.stringify(devices));
-        console.log('✅ New device tracked:', deviceId);
-      }
-    } catch (e) {
-      console.error('Error tracking new device:', e);
+    const devices = JSON.parse(localStorage.getItem('ivyInsightDevices') || '[]');
+    if (!devices.includes(deviceId)) {
+      devices.push(deviceId);
+      localStorage.setItem('ivyInsightDevices', JSON.stringify(devices));
+      console.log('📱 Devices now:', devices);
     }
   }
 
@@ -108,14 +69,7 @@ class UserTracking {
 
   // Track user sign-up/onboarding
   async trackUserSignup(userData) {
-    const userId = userData.userId || this.generateUserId();
-    
-    // Save user data
-    try {
-      localStorage.setItem('ivyInsightUserId', userId);
-    } catch (e) {
-      console.log('Could not save user ID');
-    }
+    const userId = this.generateUserId();
     
     const trackingData = {
       sessionId: this.sessionId,
@@ -123,13 +77,13 @@ class UserTracking {
       userId: userId,
       name: userData.name,
       age: userData.age,
-      personality: userData.personality?.name || 'Not selected',
+      personality: userData.personality || 'Not selected',
       timestamp: new Date().toISOString(),
       action: 'signup'
     };
 
     this.saveToLocalStorage(trackingData);
-    console.log('📝 User signup tracked:', userId);
+    console.log('📝 Signup tracked:', { name: userData.name, deviceId: this.deviceId });
     
     return trackingData;
   }
@@ -172,20 +126,10 @@ class UserTracking {
 
   // Get or create user ID
   getUserId() {
-    let userId = null;
-    try {
-      userId = localStorage.getItem('ivyInsightUserId');
-    } catch (e) {
-      console.log('Could not get user ID');
-    }
-    
+    let userId = localStorage.getItem('ivyInsightUserId');
     if (!userId) {
       userId = this.generateUserId();
-      try {
-        localStorage.setItem('ivyInsightUserId', userId);
-      } catch (e) {
-        console.log('Could not save user ID');
-      }
+      localStorage.setItem('ivyInsightUserId', userId);
     }
     return userId;
   }
@@ -216,9 +160,10 @@ class UserTracking {
   getUniqueDevicesCount() {
     try {
       const devices = JSON.parse(localStorage.getItem('ivyInsightDevices') || '[]');
+      console.log('📊 Unique devices:', devices.length, devices);
       return devices.length;
     } catch (e) {
-      return 1; // At least this device
+      return 1;
     }
   }
 
@@ -229,20 +174,40 @@ class UserTracking {
     
     // Get unique user IDs from signups
     const uniqueUsers = new Set(signups.map(s => s.userId));
+    console.log('📊 Signups:', signups.length, 'Unique users:', uniqueUsers.size);
     return uniqueUsers.size;
+  }
+
+  // Get activities count
+  getActivitiesCount() {
+    const data = this.getAllTrackingData();
+    const activities = data.filter(item => item.activityName);
+    console.log('📊 Activities:', activities.length);
+    return activities.length;
+  }
+
+  // Get sessions count
+  getSessionsCount() {
+    const data = this.getAllTrackingData();
+    const sessions = new Set(data.map(item => item.sessionId));
+    console.log('📊 Sessions:', sessions.size);
+    return sessions.size;
   }
 
   // Get user statistics
   getUserStats() {
-    const data = this.getAllTrackingData();
+    console.log('📊 Calculating stats...');
     
-    return {
+    const stats = {
       uniqueDevices: this.getUniqueDevicesCount(),
       totalSignups: this.getSignupsCount(),
-      totalActivities: data.filter(item => item.activityName).length,
-      totalSessions: new Set(data.filter(item => item.sessionId).map(s => s.sessionId)).size,
+      totalActivities: this.getActivitiesCount(),
+      totalSessions: this.getSessionsCount(),
       lastUpdated: new Date().toISOString()
     };
+    
+    console.log('📊 Final stats:', stats);
+    return stats;
   }
 
   // Clear all data (for testing)
@@ -258,7 +223,7 @@ class UserTracking {
 // Create singleton instance
 export const userTracking = new UserTracking();
 
-// For debugging - expose to window in development
+// For debugging
 if (process.env.NODE_ENV === 'development') {
   window.userTracking = userTracking;
 }
