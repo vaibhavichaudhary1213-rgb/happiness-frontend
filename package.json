@@ -21,20 +21,14 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "CI=false DISABLE_ESLINT_PLUGIN=true react-scripts build",
+    "build": "CI=false GENERATE_SOURCEMAP=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "react-app/jest"
-    ],
-    "rules": {
-      "import/no-anonymous-default-export": "off",
-      "react-hooks/exhaustive-deps": "warn",
-      "no-unused-vars": "warn"
-    }
+      "react-app"
+    ]
   },
   "browserslist": {
     "production": [

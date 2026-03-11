@@ -15,11 +15,9 @@ import {
   Flame,
   Award,
   ChevronRight,
-  ChevronLeft,
   Target,
   Sparkles,
   Heart,
-  Coffee,
   Sun,
   Zap
 } from 'lucide-react';

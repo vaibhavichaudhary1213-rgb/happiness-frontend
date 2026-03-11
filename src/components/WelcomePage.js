@@ -4,22 +4,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { forestCabinTheme as theme } from "../styles/forestCabinTheme.js";
 import { userTracking } from '../services/userTracking';
 
-// Icons
-import { 
-  Sparkles, 
-  Heart, 
-  Coffee, 
-  Sun, 
-  Moon, 
-  Cloud, 
-  Flower2,
-  Leaf,
-  Star,
-  Smile,
-  Cat,
-  Bird
-} from 'lucide-react';
-
 function WelcomePage({ onWelcomeComplete }) {
   const [step, setStep] = useState(1);
   const [name, setName] = useState("");
