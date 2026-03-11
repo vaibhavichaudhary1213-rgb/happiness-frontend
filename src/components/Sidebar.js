@@ -17,7 +17,7 @@ function Sidebar({ activeTab, onTabChange, onExpandChange, userData, onUpdateUse
     { id: "wellness", icon: "🌿", label: "Wellness", color: theme?.colors?.primary?.main || "#1A3A3A" },
     { id: "habits", icon: "⭐", label: "Habits", color: theme?.colors?.accent?.honey || "#D8C0A0" },
     { id: "growth", icon: "🌸", label: "Growth", color: theme?.colors?.accent?.lavender || "#2A254A" },
-    { id: "mood", icon: "📊", label: "Mood Tracker", color: theme?.colors?.accent?.softLavender || "#3A2A5A" },
+    { id: "mood", icon: "🍃", label: "Mood Tracker", color: theme?.colors?.accent?.softLavender || "#3A2A5A" },
     { id: "admin", icon: "📊", label: "Admin", color: theme?.colors?.secondary?.main || "#2A254A" } // ADMIN TAB HERE
   ];
 
