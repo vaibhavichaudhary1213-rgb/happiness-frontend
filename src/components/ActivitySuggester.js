@@ -429,32 +429,30 @@ useEffect(() => {
   };
 
   const showCompletionRewards = (activity) => {
-    setShowTimer(false);
-    setShowChallenge(false);
-    setShowAnswerPopup(false);
-    setSelectedActivity(activity);
+  setShowTimer(false);
+  setShowChallenge(false);
+  setShowAnswerPopup(false);
+  setSelectedActivity(null);
 
-    // Track activity completion
-    userTracking.trackActivity(
-      userTracking.getUserId(),
-      activity.name,
-      activity.duration || 5,
+  // Track activity completion
+  userTracking.trackActivity(
+    userTracking.getUserId(),
+    activity.name,
+    activity.duration || 5,
     true
-    );
-    
-    setRewards({
-      message: `✨ You completed the ${activity.name.toLowerCase()}! Congrats! You are dancing through the lightening strikes`,
-      points: 25,
-      badge: 'Mindfulness Beginner',
-      emoji: '🎉',
-      showBelow: true
-    });
-    setShowRewards(true);
-
-    setTimeout(() => {
-      askForFavoritePlace(activity);
-    }, 1000);
-  };
+  );
+  
+  setRewards({
+    message: `✨ You completed the ${activity.name.toLowerCase()}! Congrats! You are dancing through the lightening strikes`,
+    points: 50,
+    badge: 'Mindfulness Beginner',
+    emoji: '🎉',
+    showBelow: true
+  });
+  setShowRewards(true);
+  
+  // setTimeout block REMOVED
+};
 
   const startTimer = (activity) => {
     setSelectedActivity(activity);
