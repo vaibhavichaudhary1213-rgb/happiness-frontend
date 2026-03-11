@@ -294,7 +294,6 @@ function ChatBox({ onEmotionDetected, userData, isPopupOpen }) {
                 moodData={lastMoodData}
                 onClose={() => setShowSuggestions(false)}
                 onActivitySelected={handleActivitySelected}
-                onPopupStateChange={setIsPopupOpen}
                 onAddBotMessage={addMessage}
               />
             </motion.div>
