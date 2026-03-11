@@ -14,7 +14,6 @@ import "./styles/global.css";
 import AdminDashboard from './components/AdminDashboard.js';
 import { userTracking } from './services/userTracking';
 import PublicQRPage from './components/PublicQRPage';
-import QRCodeDisplay from './components/QRCodeDisplay';
 
 function App() {
   const [activeTab, setActiveTab] = useState("chat");
