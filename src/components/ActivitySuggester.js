@@ -61,6 +61,19 @@ function ActivitySuggestions({ moodData, darkMode, onClose, onActivitySelected, 
   const [currentAnswerIndex, setCurrentAnswerIndex] = useState(0);
   const [answerInput, setAnswerInput] = useState("");
 
+  // ADD THE HELPER FUNCTION HERE (right after useState declarations)
+  const addBotMessageToChat = (message) => {
+    // Try to find the chat context/function
+    if (typeof onAddBotMessage === 'function') {
+      onAddBotMessage(message);
+    } else {
+      // Store in localStorage for ChatBox to pick up
+      localStorage.setItem('pendingBotMessage', message);
+      // Dispatch event for ChatBox to listen to
+      window.dispatchEvent(new CustomEvent('newBotMessage', { detail: message }));
+    }
+  };
+
   // Notify parent component when any popup is open
 useEffect(() => {
   const isAnyPopupOpen = showTimer || showChallenge || showFavoritePopup || showAnswerPopup || showRewards;
@@ -514,6 +527,25 @@ useEffect(() => {
     if (e) {
       e.stopPropagation();
     }
+
+     // NEW CODE: Check if this is a rewards popup being closed (activity completion)
+  if (showRewards && rewards) {
+    const hasShownFirstActivityMessage = localStorage.getItem('firstActivityMessageShown');
+    const isFirstActivity = rewards?.points === 50; // Points indicator for first activity
+    
+    // Show message only for first activity completion
+    if (!hasShownFirstActivityMessage && isFirstActivity) {
+      const helplineNumber = "1800-599-0019"; // Kiran Mental Health Helpline
+      const feedbackFormLink = "https://docs.google.com/forms/d/e/1FAIpQLSdg2eyJJwZEw1UXLYTIH20cSestuHt4aGTLD9TkyJHAwXaIqg/viewform?usp=publish-editor";
+      
+      const supportMessage = `Thank you for completing your first activity with us! 💖\n\nIf you ever need support, here are free, government-backed mental health resources in India:\n\n🇮🇳 Tele-MANAS (24/7): 14416\n🇮🇳 KIRAN Helpline (24/7): 1800-599-0019\n🇮🇳 MANODARPAN (Student Support): 8448440632\n\nYou can also download the Tele-MANAS app from Google Play Store.\n\nWe'd love your feedback to improve the app: ${feedbackFormLink}`;
+      
+      // CALL THE HELPER FUNCTION HERE
+      addBotMessageToChat(supportMessage);
+      
+      localStorage.setItem('firstActivityMessageShown', 'true');
+    }
+  }
     
     setShowTimer(false);
     setShowChallenge(false);
