@@ -5,7 +5,15 @@ import MessageBubble from "./MessageBubble.js";
 import ActivitySuggestions from "./ActivitySuggester.js";
 import { sendMoodMessage } from "../services/api.js";
 import { forestCabinTheme } from "../styles/forestCabinTheme.js";
-import { Heart, Phone, MessageCircle, ExternalLink, X, Send, Sparkles } from 'lucide-react';
+import { 
+  Send, 
+  Sparkles, 
+  Heart, 
+  Phone, 
+  MessageCircle, 
+  ExternalLink, 
+  X 
+} from 'lucide-react';
 
 function ChatBox({ onEmotionDetected, userData, isPopupOpen }) {
   const [messages, setMessages] = useState([
