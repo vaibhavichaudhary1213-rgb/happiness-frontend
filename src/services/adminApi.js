@@ -1,111 +1,124 @@
-// services/adminApi.js
-import { userTracking } from './userTracking';
+// services/adminApi.js - FIXED VERSION
+import api from './api';
 
-// Get admin stats from REAL user tracking data
+// Admin login
+export const adminLogin = async (password) => {
+  try {
+    const result = await api.post('/admin/login', { password });
+    api.setToken(result.token);
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: 'Invalid password' };
+  }
+};
+
+// Check if admin is authenticated
+export const isAdminAuthenticated = () => {
+  return !!localStorage.getItem('adminToken');
+};
+
+// Logout
+export const adminLogout = () => {
+  localStorage.removeItem('adminToken');
+};
+
+// Get REAL admin stats from backend
 export const getAdminStats = async () => {
-  console.log("📊 Reading real user data from tracking...");
-  
-  const stats = userTracking.getUserStats();
-  
-  return {
-    uniqueUsers: stats.uniqueDevices || 0,
-    activitiesCompleted: stats.totalActivities || 0,
-    totalSessions: stats.totalSessions || 0,
-    signups: stats.totalSignups || 0
-  };
+  try {
+    const data = await api.get('/admin/stats');
+    console.log("📊 Real backend stats:", data);
+    
+    return {
+      uniqueUsers: data.uniqueUsers || 0,
+      activitiesCompleted: data.activitiesCompleted || 0,
+      totalSessions: data.totalSessions || 0,
+      signups: data.signups || 0,
+      activeToday: data.activeToday || 0,
+      activitiesToday: data.activitiesToday || 0
+    };
+  } catch (error) {
+    console.error("Failed to fetch stats:", error);
+    // Return zeros instead of mock data
+    return {
+      uniqueUsers: 0,
+      activitiesCompleted: 0,
+      totalSessions: 0,
+      signups: 0,
+      activeToday: 0,
+      activitiesToday: 0
+    };
+  }
 };
 
-// Get recent reflections from localStorage
+// Get recent reflections from backend
 export const getRecentReflections = async () => {
-  // Get reflections from tracking data or localStorage
-  const reflections = JSON.parse(localStorage.getItem('ivyInsightReflections') || '[]');
-  
-  // If no reflections yet, return empty array (no mock data)
-  return { 
-    reflections: reflections.slice(-5).reverse() // Last 5, newest first
-  };
+  try {
+    const data = await api.get('/admin/stats'); // Stats already includes reflections
+    return { 
+      reflections: data.recentReflections || [] 
+    };
+  } catch (error) {
+    console.error("Failed to fetch reflections:", error);
+    return { reflections: [] };
+  }
 };
 
-// Get learning goals from localStorage
+// Get learning goals from backend
 export const getLearningGoals = async () => {
-  const goals = JSON.parse(localStorage.getItem('ivyInsightGoals') || '[]');
-  return { goals };
+  try {
+    const data = await api.get('/admin/stats'); // Stats already includes goals
+    return { 
+      goals: data.learningGoals || [] 
+    };
+  } catch (error) {
+    console.error("Failed to fetch goals:", error);
+    return { goals: [] };
+  }
 };
 
 // Add a new goal
 export const addGoal = async (goalText) => {
-  const goals = JSON.parse(localStorage.getItem('ivyInsightGoals') || '[]');
-  const newGoal = {
-    id: Date.now(),
-    text: goalText,
-    completed: false,
-    createdAt: new Date().toISOString()
-  };
-  goals.push(newGoal);
-  localStorage.setItem('ivyInsightGoals', JSON.stringify(goals));
-  return { success: true, goal: newGoal };
+  try {
+    const result = await api.post('/admin/goals', { text: goalText });
+    return { success: true, goal: result.goal };
+  } catch (error) {
+    console.error("Failed to add goal:", error);
+    return { success: false };
+  }
 };
 
-// Toggle goal completion status
+// Toggle goal completion
 export const toggleGoal = async (goalId) => {
-  const goals = JSON.parse(localStorage.getItem('ivyInsightGoals') || '[]');
-  const updatedGoals = goals.map(g => 
-    g.id === goalId ? { ...g, completed: !g.completed } : g
-  );
-  localStorage.setItem('ivyInsightGoals', JSON.stringify(updatedGoals));
-  return { success: true };
+  try {
+    const result = await api.post(`/admin/goals/${goalId}/toggle`);
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to toggle goal:", error);
+    return { success: false };
+  }
 };
 
-// Save a reflection
-export const saveReflection = async (question, answer) => {
-  const reflections = JSON.parse(localStorage.getItem('ivyInsightReflections') || '[]');
-  const newReflection = {
-    id: Date.now(),
-    question,
-    answer,
-    date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-    timestamp: new Date().toISOString()
-  };
-  reflections.push(newReflection);
-  localStorage.setItem('ivyInsightReflections', JSON.stringify(reflections));
-  return { success: true, reflection: newReflection };
-};
-
-// Get combined dashboard data
-export const getDashboardData = async () => {
-  const [stats, reflections, goals] = await Promise.all([
-    getAdminStats(),
-    getRecentReflections(),
-    getLearningGoals()
-  ]);
+// Track user activity (called from other components)
+export const trackUserActivity = async (activityType, activityData) => {
+  const userId = localStorage.getItem('userId') || generateUserId();
   
-  return {
-    stats,
-    reflections: reflections.reflections,
-    goals: goals.goals
-  };
+  try {
+    await api.post('/admin/track/user', {
+      user_id: userId,
+      activity_type: activityType,
+      activity_data: activityData
+    });
+  } catch (error) {
+    console.error("Failed to track activity:", error);
+  }
 };
 
-// Track user activity (wrapper for userTracking)
-export const trackUserActivity = (activityName, duration) => {
-  const userId = userTracking.getUserId();
-  userTracking.trackActivity(userId, activityName, duration, true);
-};
-
-// Track page view / session
-export const trackPageView = () => {
-  userTracking.trackSession('page_view');
-};
-
-// Export all functions
-export default {
-  getAdminStats,
-  getRecentReflections,
-  getLearningGoals,
-  addGoal,
-  toggleGoal,
-  saveReflection,
-  getDashboardData,
-  trackUserActivity,
-  trackPageView
-};
+// Generate consistent user ID
+function generateUserId() {
+  let userId = localStorage.getItem('userId');
+  if (!userId) {
+    userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    localStorage.setItem('userId', userId);
+  }
+  return userId;
+}
