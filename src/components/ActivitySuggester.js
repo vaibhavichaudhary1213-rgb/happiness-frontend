@@ -536,14 +536,15 @@ useEffect(() => {
   setPendingActivityForPlace(activity);
   setShowFavoritePlaceQuestion(true);
   
-  // Send message to chat asking for favorite place
-  const questionMessage = "What's your favorite place to visit? It could be a city, a park, a cafe, anywhere that makes you happy! 🌍";
-  addBotMessageToChat(questionMessage);
-  
-  // Set the awaiting state in ChatBox
-  if (window.setAwaitingFavoritePlace) {
-    window.setAwaitingFavoritePlace(true);
-  }
+  // Wait a bit before asking for favorite place
+  setTimeout(() => {
+    const questionMessage = "What's your favorite place to visit? It could be a city, a park, a cafe, anywhere that makes you happy! 🌍";
+    addBotMessageToChat(questionMessage);
+    
+    if (window.setAwaitingFavoritePlace) {
+      window.setAwaitingFavoritePlace(true);
+    }
+  }, 1000);
 };
 
   const handleFavoritePlaceReply = async (place) => {
@@ -669,33 +670,6 @@ useEffect(() => {
                 position: 'relative'
               }}
             >
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  closePopup();
-                }}
-                style={{
-                  position: 'absolute',
-                  top: theme.spacing?.sm || '0.75rem',
-                  right: theme.spacing?.sm || '0.75rem',
-                  background: theme.colors?.neutral?.[100] || '#F3F4F6',
-                  border: 'none',
-                  cursor: 'pointer',
-                  color: theme.colors?.neutral?.[500] || '#6B7280',
-                  width: 32,
-                  height: 32,
-                  borderRadius: '9999px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transition: 'all 0.2s',
-                  zIndex: 10
-                }}
-                onMouseEnter={(e) => e.target.style.background = theme.colors?.accent?.peach || '#FED7C1'}
-                onMouseLeave={(e) => e.target.style.background = theme.colors?.neutral?.[100] || '#F3F4F6'}
-              >
-                <X size={18} />
-              </button>
 
               <div style={{ fontSize: '64px', marginBottom: theme.spacing?.md || '1rem' }}>
                 {selectedActivity.emoji}
