@@ -30,7 +30,7 @@ import {
   Send
 } from 'lucide-react';
 
-function ActivitySuggestions({ moodData, darkMode, onClose, onActivitySelected, onPopupStateChange }) {
+function ActivitySuggestions({ moodData, darkMode, onClose, onActivitySelected, onPopupStateChange, onAddBotMessage }) {
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState(null);
