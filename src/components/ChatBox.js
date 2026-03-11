@@ -5,7 +5,7 @@ import MessageBubble from "./MessageBubble.js";
 import ActivitySuggestions from "./ActivitySuggester.js";
 import { sendMoodMessage } from "../services/api.js";
 import { forestCabinTheme } from "../styles/forestCabinTheme.js";
-import { Send, Sparkles } from 'lucide-react';
+import { Heart, Phone, MessageCircle, ExternalLink, X, Send, Sparkles } from 'lucide-react';
 
 function ChatBox({ onEmotionDetected, userData, isPopupOpen }) {
   const [messages, setMessages] = useState([
@@ -26,6 +26,7 @@ function ChatBox({ onEmotionDetected, userData, isPopupOpen }) {
   const [activityConfirmation, setActivityConfirmation] = useState(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const [showHelpPopup, setShowHelpPopup] = useState(false);
 
    // ADD THIS HELPER FUNCTION HERE (right after state declarations)
   const addMessage = (text, sender) => {
@@ -191,70 +192,101 @@ setTimeout(() => {
       }} />
 
       {/* Chat Header */}
-      <div style={{
-        padding: theme.spacing.xl,
-        background: theme.colors.background.warm,
-        borderBottom: `1px solid ${theme.colors.neutral[200]}`,
-        display: 'flex',
-        alignItems: 'center',
-        gap: theme.spacing.lg,
-        position: 'relative',
-        zIndex: 1,
-        backdropFilter: 'blur(10px)',
-      }}>
-        <div style={{
-          width: 56,
-          height: 56,
-          borderRadius: theme.borderRadius.full,
-          background: `linear-gradient(135deg, ${theme.colors.primary.light} 0%, ${theme.colors.primary.main} 100%)`,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '28px',
-          boxShadow: theme.shadows.md
-        }}>
-          🌲
-        </div>
-        <div>
-          <h3 style={{ 
-            margin: 0, 
-            fontSize: theme.typography.h3,
-            color: theme.colors.text.primary,
-            fontWeight: 600,
-            letterSpacing: '-0.02em'
-          }}>
-            Kindred Keeper
-          </h3>
-          <p style={{ 
-            margin: '4px 0 0', 
-            fontSize: theme.typography.small,
-            color: theme.colors.text.muted,
-            display: 'flex',
-            alignItems: 'center',
-            gap: theme.spacing.xs
-          }}>
-            <span style={{
-              width: 8,
-              height: 8,
-              borderRadius: '50%',
-              background: theme.colors.accent.sage,
-              display: 'inline-block'
-            }} />
-            Here for {userData?.name || 'you'} • always
-          </p>
-        </div>
-        <div style={{ marginLeft: 'auto', display: 'flex', gap: theme.spacing.sm }}>
-          <div className="gentle-float" style={{
-            padding: theme.spacing.sm,
-            background: `${theme.colors.accent.sage}40`,
-            borderRadius: theme.borderRadius.full,
-            color: theme.colors.text.secondary,
-            fontSize: theme.typography.small
-          }}>
-            🌱 {lastMoodData?.emotion || 'calm'}
-          </div>
-        </div>
-      </div>
+      {/* Chat Header */}
+<div style={{
+  padding: theme.spacing.xl,
+  background: theme.colors.background.warm,
+  borderBottom: `1px solid ${theme.colors.neutral[200]}`,
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing.lg,
+  position: 'relative',
+  zIndex: 1,
+  backdropFilter: 'blur(10px)',
+}}>
+  {/* Left side - Avatar and Title */}
+  <div style={{
+    width: 56,
+    height: 56,
+    borderRadius: theme.borderRadius.full,
+    background: `linear-gradient(135deg, ${theme.colors.primary.light} 0%, ${theme.colors.primary.main} 100%)`,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '28px',
+    boxShadow: theme.shadows.md
+  }}>
+    🌲
+  </div>
+  
+  <div style={{ flex: 1 }}>
+    <h3 style={{ 
+      margin: 0, 
+      fontSize: theme.typography.h3,
+      color: theme.colors.text.primary,
+      fontWeight: 600,
+      letterSpacing: '-0.02em'
+    }}>
+      Kindred Keeper
+    </h3>
+    <p style={{ 
+      margin: '4px 0 0', 
+      fontSize: theme.typography.small,
+      color: theme.colors.text.muted,
+      display: 'flex',
+      alignItems: 'center',
+      gap: theme.spacing.xs
+    }}>
+      <span style={{
+        width: 8,
+        height: 8,
+        borderRadius: '50%',
+        background: theme.colors.accent.sage,
+        display: 'inline-block'
+      }} />
+      Here for {userData?.name || 'you'} • always
+    </p>
+  </div>
+
+  {/* Support Button - Positioned between header and context tag */}
+  <motion.button
+    whileHover={{ scale: 1.05 }}
+    whileTap={{ scale: 0.95 }}
+    onClick={() => setShowHelpPopup(true)}
+    style={{
+      padding: `${theme.spacing.xs} ${theme.spacing.md}`,
+      background: `linear-gradient(135deg, ${theme.colors.accent.terracotta}, ${theme.colors.accent.peach})`,
+      border: 'none',
+      borderRadius: theme.borderRadius.full,
+      color: 'white',
+      fontSize: theme.typography.small,
+      fontWeight: 600,
+      cursor: 'pointer',
+      boxShadow: theme.shadows.sm,
+      display: 'flex',
+      alignItems: 'center',
+      gap: theme.spacing.xs,
+      marginRight: theme.spacing.sm
+    }}
+  >
+    <Heart size={14} />
+    Need Support?
+  </motion.button>
+
+  {/* Context Tag - Right side */}
+  <div className="gentle-float" style={{
+    padding: theme.spacing.sm,
+    background: `${theme.colors.accent.sage}40`,
+    borderRadius: theme.borderRadius.full,
+    color: theme.colors.text.secondary,
+    fontSize: theme.typography.small,
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing.xs
+  }}>
+    🌱 {lastMoodData?.emotion || 'calm'}
+  </div>
+</div>
 
       {/* Messages Area */}
       <div style={{
@@ -443,5 +475,164 @@ setTimeout(() => {
     </div>
   );
 }
+
+{/* Help Popup */}
+<AnimatePresence>
+  {showHelpPopup && (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backdropFilter: 'blur(8px)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 9999
+      }}
+      onClick={() => setShowHelpPopup(false)}
+    >
+      <motion.div
+        initial={{ scale: 0.9, y: 20 }}
+        animate={{ scale: 1, y: 0 }}
+        exit={{ scale: 0.9, y: 20 }}
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          background: theme.colors.background.paper,
+          borderRadius: theme.borderRadius['2xl'],
+          padding: theme.spacing['2xl'],
+          maxWidth: '500px',
+          width: '90%',
+          position: 'relative',
+          boxShadow: theme.shadows.xl,
+          border: `1px solid ${theme.colors.accent.terracotta}30`
+        }}
+      >
+        <button
+          onClick={() => setShowHelpPopup(false)}
+          style={{
+            position: 'absolute',
+            top: theme.spacing.md,
+            right: theme.spacing.md,
+            background: theme.colors.neutral[100],
+            border: 'none',
+            borderRadius: '50%',
+            width: 32,
+            height: 32,
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: theme.colors.neutral[500]
+          }}
+        >
+          <X size={18} />
+        </button>
+
+        <div style={{ fontSize: '48px', textAlign: 'center', marginBottom: theme.spacing.md }}>
+          🫂
+        </div>
+
+        <h3 style={{
+          fontSize: theme.typography.h3,
+          color: theme.colors.text.primary,
+          marginBottom: theme.spacing.lg,
+          textAlign: 'center'
+        }}>
+          You're Not Alone
+        </h3>
+
+        {/* Helpline Section */}
+        <div style={{
+          background: `${theme.colors.accent.sage}15`,
+          borderRadius: theme.borderRadius.lg,
+          padding: theme.spacing.lg,
+          marginBottom: theme.spacing.lg
+        }}>
+          <h4 style={{
+            fontSize: theme.typography.h4,
+            color: theme.colors.accent.sage,
+            marginBottom: theme.spacing.sm,
+            display: 'flex',
+            alignItems: 'center',
+            gap: theme.spacing.sm
+          }}>
+            <Phone size={20} />
+            Mental Health Helplines
+          </h4>
+          <p style={{ marginBottom: theme.spacing.sm }}>
+            <strong>🇮🇳 Tele-MANAS:</strong> <a href="tel:14416" style={{ color: theme.colors.accent.terracotta, textDecoration: 'none' }}>14416</a> (24/7)
+          </p>
+          <p style={{ marginBottom: theme.spacing.sm }}>
+            <strong>🇮🇳 KIRAN Helpline:</strong> <a href="tel:18005990019" style={{ color: theme.colors.accent.terracotta, textDecoration: 'none' }}>1800-599-0019</a> (24/7)
+          </p>
+          <p>
+            <strong>🇮🇳 MANODARPAN:</strong> <a href="tel:8448440632" style={{ color: theme.colors.accent.terracotta, textDecoration: 'none' }}>8448440632</a> (Student Support)
+          </p>
+        </div>
+
+        {/* Feedback Section */}
+        <div style={{
+          background: `${theme.colors.accent.peach}15`,
+          borderRadius: theme.borderRadius.lg,
+          padding: theme.spacing.lg,
+          marginBottom: theme.spacing.lg
+        }}>
+          <h4 style={{
+            fontSize: theme.typography.h4,
+            color: theme.colors.accent.terracotta,
+            marginBottom: theme.spacing.sm,
+            display: 'flex',
+            alignItems: 'center',
+            gap: theme.spacing.sm
+          }}>
+            <MessageCircle size={20} />
+            Share Your Feedback
+          </h4>
+          <p style={{ marginBottom: theme.spacing.md }}>
+            Help us make this app better for everyone. Your feedback matters! 💖
+          </p>
+          <motion.a
+            href="https://docs.google.com/forms/d/e/1FAIpQLSdg2eyJJwZEw1UXLYTIH20cSestuHt4aGTLD9TkyJHAwXaIqg/viewform?usp=pp_url"
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: theme.spacing.sm,
+              padding: `${theme.spacing.sm} ${theme.spacing.lg}`,
+              background: theme.colors.accent.terracotta,
+              color: 'white',
+              textDecoration: 'none',
+              borderRadius: theme.borderRadius.full,
+              fontSize: theme.typography.small,
+              fontWeight: 600
+            }}
+          >
+            Open Feedback Form
+            <ExternalLink size={16} />
+          </motion.a>
+        </div>
+
+        <p style={{
+          fontSize: theme.typography.tiny,
+          color: theme.colors.text.muted,
+          textAlign: 'center',
+          fontStyle: 'italic'
+        }}>
+          These services are free, confidential, and available 24/7
+        </p>
+      </motion.div>
+    </motion.div>
+  )}
+</AnimatePresence>
 
 export default ChatBox;
