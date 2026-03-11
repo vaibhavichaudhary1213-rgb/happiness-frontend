@@ -14,6 +14,14 @@ API.interceptors.request.use(
     if (adminToken) {
       config.headers.Authorization = `Bearer ${adminToken}`;
     }
+
+
+    // Add setToken method
+  API.setToken = (token) => {
+    if (token) {
+       localStorage.setItem('adminToken', token);
+    }
+  };
     
     // Add user ID for tracking
     const userId = localStorage.getItem('userId');
@@ -99,13 +107,14 @@ export const sendMoodMessage = async (text, intensity = 3, userId = null) => {
 // ==================== ADMIN FUNCTIONS ====================
 
 /**
- * Admin login
+ * Admin login - FIXED VERSION
  */
 export const adminLogin = async (password) => {
   try {
-    const response = await API.post("/admin/login", null, {
-      params: { password }
-    });
+    // Send password in the request body, NOT as query params
+    const response = await API.post("/admin/login", { password });
+    
+    console.log('🔵 Login response:', response.data);
     
     if (response.data.success && response.data.token) {
       localStorage.setItem('adminToken', response.data.token);
@@ -113,7 +122,7 @@ export const adminLogin = async (password) => {
     }
     return { success: false, error: "Invalid response from server" };
   } catch (error) {
-    console.error("Admin login error:", error);
+    console.error("🔴 Admin login error:", error.response?.data || error.message);
     return { 
       success: false, 
       error: error.response?.data?.detail || "Login failed" 
