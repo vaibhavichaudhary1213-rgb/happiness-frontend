@@ -434,7 +434,7 @@ useEffect(() => {
     setShowTimer(false);
     setShowChallenge(false);
     setShowAnswerPopup(false);
-    setSelectedActivity(null);
+    setSelectedActivity(activity);
 
     // Track activity completion
     userTracking.trackActivity(
@@ -446,7 +446,7 @@ useEffect(() => {
     
     setRewards({
       message: `✨ You completed the ${activity.name.toLowerCase()}! Congrats! You are dancing through the lightening strikes`,
-      points: 50,
+      points: 25,
       badge: 'Mindfulness Beginner',
       emoji: '🎉',
       showBelow: true
@@ -531,13 +531,20 @@ useEffect(() => {
 
      // 👇 ADD ALL THESE NEW FUNCTIONS HERE
   const askForFavoritePlace = (activity) => {
-    setPendingActivityForPlace(activity);
-    setShowFavoritePlaceQuestion(true);
-    
-    // Send message to chat asking for favorite place
-    const questionMessage = "What's your favorite place to visit? It could be a city, a park, a cafe, anywhere that makes you happy! 🌍";
-    addBotMessageToChat(questionMessage);
-  };
+  console.log('🎯 askForFavoritePlace called with:', activity);
+  
+  setPendingActivityForPlace(activity);
+  setShowFavoritePlaceQuestion(true);
+  
+  // Send message to chat asking for favorite place
+  const questionMessage = "What's your favorite place to visit? It could be a city, a park, a cafe, anywhere that makes you happy! 🌍";
+  addBotMessageToChat(questionMessage);
+  
+  // Set the awaiting state in ChatBox
+  if (window.setAwaitingFavoritePlace) {
+    window.setAwaitingFavoritePlace(true);
+  }
+};
 
   const handleFavoritePlaceReply = async (place) => {
     if (!place.trim() || !pendingActivityForPlace) return;
@@ -565,9 +572,46 @@ useEffect(() => {
   };
 
   const closePopup = (e) => {
-    if (e) {
-      e.stopPropagation();
+  if (e) {
+    e.stopPropagation();
+  }
+
+  // DEBUGGING: Check if this is a rewards popup being closed
+  if (showRewards && rewards) {
+    console.log('🎯 Closing rewards popup', { 
+      showRewards, 
+      rewards,
+      points: rewards?.points,
+      message: rewards?.message
+    });
+    
+    const hasShownFirstActivityMessage = localStorage.getItem('firstActivityMessageShown');
+    // 👇 CHANGE THIS LINE - check for EITHER 25 OR 50 points
+    const isFirstActivity = rewards?.points === 25 || rewards?.points === 50;
+    
+    console.log('🎯 First activity check:', { 
+      hasShownFirstActivityMessage, 
+      isFirstActivity,
+      points: rewards?.points 
+    });
+    
+    // Show message only for first activity completion
+    if (!hasShownFirstActivityMessage && isFirstActivity) {
+      console.log('🎯 FIRST ACTIVITY DETECTED! Should show favorite place question');
+      
+      // Call the function to ask for favorite place
+      askForFavoritePlace(selectedActivity);
+      
+      localStorage.setItem('firstActivityMessageShown', 'true');
+      console.log('🎯 firstActivityMessageShown set in localStorage');
+    } else {
+      console.log('🎯 Not first activity or already shown:', { 
+        hasShown: hasShownFirstActivityMessage, 
+        isFirst: isFirstActivity,
+        points: rewards?.points 
+      });
     }
+  }
     
     setShowTimer(false);
     setShowChallenge(false);
