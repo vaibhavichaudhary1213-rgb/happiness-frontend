@@ -276,7 +276,7 @@ body {
 
 .reflection-item,
 .reflection-entry {
-  border-bottom: 1px solid rgba(107, 70, 193, 0.2);
+  border-bottom: 1px solid rgb(107, 70, 193);
   padding: 12px 0;
   margin-bottom: 8px;
 }
