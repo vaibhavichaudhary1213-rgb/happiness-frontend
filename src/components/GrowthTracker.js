@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { forestCabinTheme as theme } from "../styles/forestCabinTheme.js";
 import * as wellnessApi from "../services/wellnessApi.js";
+import '../styles/global.css';
 
 // Icons
 import { 
