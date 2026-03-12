@@ -280,26 +280,25 @@ function ChatBox({ onEmotionDetected, userData, isPopupOpen }) {
       }}>
         <AnimatePresence>
           {showSuggestions && lastMoodData && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              style={{
-                marginTop: theme.spacing.md,
-                marginBottom: theme.spacing.md,
-                order: -1,
-                position: 'relative',
-                zIndex: 10
-              }}
-            >
-              <ActivitySuggestions
-                moodData={lastMoodData}
-                onClose={() => {}}
-                onActivitySelected={handleActivitySelected}
-                onAddBotMessage={addMessage}
-              />
-            </motion.div>
-          )}
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -20 }}
+    style={{
+      marginTop: theme.spacing.md,
+      marginBottom: theme.spacing.md,
+      position: 'relative',
+      zIndex: 10
+    }}
+  >
+    <ActivitySuggestions
+      moodData={lastMoodData}
+      onClose={() => {}}
+      onActivitySelected={handleActivitySelected}
+      onAddBotMessage={addMessage}
+    />
+  </motion.div>
+)}
 
           {messages.map((msg) => (
             <MessageBubble
