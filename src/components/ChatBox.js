@@ -279,81 +279,85 @@ function ChatBox({ onEmotionDetected, userData, isPopupOpen }) {
         zIndex: 1
       }}>
         <AnimatePresence>
-          {showSuggestions && lastMoodData && (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0, y: -20 }}
-    style={{
-      marginTop: theme.spacing.md,
-      marginBottom: theme.spacing.md,
-      position: 'relative',
-      zIndex: 10
-    }}
-  >
-    <ActivitySuggestions
-      moodData={lastMoodData}
-      onClose={() => {}}
-      onActivitySelected={handleActivitySelected}
-      onAddBotMessage={addMessage}
+  {/* Messages first - appear at top */}
+  {messages.map((msg) => (
+    <MessageBubble
+      key={msg.id}
+      message={msg.text}
+      sender={msg.sender}
+      timestamp={msg.timestamp}
+      emotion={msg.emotion}
+      gratitudePrompt={msg.gratitudePrompt}
+      kindnessChallenge={msg.kindnessChallenge}
     />
-  </motion.div>
-)}
+  ))}
 
-          {messages.map((msg) => (
-            <MessageBubble
-              key={msg.id}
-              message={msg.text}
-              sender={msg.sender}
-              timestamp={msg.timestamp}
-              emotion={msg.emotion}
-              gratitudePrompt={msg.gratitudePrompt}
-              kindnessChallenge={msg.kindnessChallenge}
-            />
-          ))}
+  {/* Activity confirmation appears after messages */}
+  {activityConfirmation && !showSuggestions && (
+    <MessageBubble
+      key={activityConfirmation.id}
+      message={activityConfirmation.text}
+      sender={activityConfirmation.sender}
+      timestamp={activityConfirmation.timestamp}
+      type={activityConfirmation.type}
+    />
+  )}
 
-          {activityConfirmation && !showSuggestions && (
-            <MessageBubble
-              key={activityConfirmation.id}
-              message={activityConfirmation.text}
-              sender={activityConfirmation.sender}
-              timestamp={activityConfirmation.timestamp}
-              type={activityConfirmation.type}
-            />
-          )}
+  {/* Activities container - now at the bottom */}
+  {showSuggestions && lastMoodData && (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      style={{
+        marginTop: theme.spacing.md,
+        marginBottom: theme.spacing.md,
+        position: 'relative',
+        zIndex: 10
+      }}
+    >
+      <ActivitySuggestions
+        moodData={lastMoodData}
+        onClose={() => {}}
+        onActivitySelected={handleActivitySelected}
+        onAddBotMessage={addMessage}
+      />
+    </motion.div>
+  )}
 
-          {isTyping && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              style={{
-                display: 'flex',
-                gap: theme.spacing.sm,
-                padding: theme.spacing.lg,
-                background: theme.colors.background.warm,
-                borderRadius: theme.borderRadius.xl,
-                width: 'fit-content',
-                border: `1px solid ${theme.colors.neutral[200]}`,
-                alignSelf: 'flex-start'
-              }}
-            >
-              {[0, 1, 2].map((i) => (
-                <motion.div
-                  key={i}
-                  animate={{ y: [0, -5, 0] }}
-                  transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.2 }}
-                  style={{
-                    width: 10,
-                    height: 10,
-                    borderRadius: '50%',
-                    background: theme.colors.accent.sage,
-                    opacity: 0.6
-                  }}
-                />
-              ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
+  {/* Typing indicator - always at the very bottom */}
+  {isTyping && (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      style={{
+        display: 'flex',
+        gap: theme.spacing.sm,
+        padding: theme.spacing.lg,
+        background: theme.colors.background.warm,
+        borderRadius: theme.borderRadius.xl,
+        width: 'fit-content',
+        border: `1px solid ${theme.colors.neutral[200]}`,
+        alignSelf: 'flex-start'
+      }}
+    >
+      {[0, 1, 2].map((i) => (
+        <motion.div
+          key={i}
+          animate={{ y: [0, -5, 0] }}
+          transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.2 }}
+          style={{
+            width: 10,
+            height: 10,
+            borderRadius: '50%',
+            background: theme.colors.accent.sage,
+            opacity: 0.6
+          }}
+        />
+      ))}
+    </motion.div>
+  )}
+</AnimatePresence>
         <div ref={messagesEndRef} />
       </div>
 
