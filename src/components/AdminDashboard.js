@@ -11,6 +11,7 @@ import {
 } from '../services/adminApi';
 import AdminLogin from './AdminLogin';
 import AdminCSVExport from './AdminCSVExport';
+import '../styles/global.css';
 
 function AdminDashboard() {
   const [authenticated, setAuthenticated] = useState(isAdminAuthenticated());
@@ -102,63 +103,73 @@ function AdminDashboard() {
       {/* Two Column Layout */}
       <div className="dashboard-columns">
         {/* Recent Reflections */}
-        <div className="reflections-card">
-          <h3>Recent Reflections</h3>
-          {reflections.length === 0 ? (
-            <p className="no-data">No reflections yet</p>
-          ) : (
-            reflections.map((ref, idx) => (
-              <div key={idx} className="reflection-item">
-                <p className="reflection-question">{ref.question}</p>
-                <p className="reflection-answer">{ref.answer}</p>
-                <p className="reflection-date">{ref.date} - User: {ref.user_id?.substring(0, 8)}</p>
-              </div>
-            ))
-          )}
-        </div>
+        {/* Recent Reflections - UPDATED WITH PURPLE THEME */}
+<div className="reflections-card">
+  <h3 className="text-whisper-dark-purple">Recent Reflections</h3>
+  {reflections.map((ref, idx) => (
+    <div key={idx} className="reflection-item">
+      <p className="reflection-question text-whisper-dark-purple">
+        {ref.question}
+      </p>
+      <p className="reflection-answer text-whisper-deep-purple">
+        {ref.answer}
+      </p>
+      <p className="reflection-date text-whisper-secondary">
+        {ref.date}
+      </p>
+    </div>
+  ))}
+</div>
 
         {/* Learning Goals */}
-        <div className="goals-card">
-          <h3>Learning Goals</h3>
-          {goals.length === 0 ? (
-            <p className="no-data">No goals yet</p>
-          ) : (
-            goals.map(goal => (
-              <div key={goal.id} className="goal-item">
-                <input
-                  type="checkbox"
-                  checked={goal.completed}
-                  onChange={() => handleToggleGoal(goal.id)}
-                />
-                <span className={goal.completed ? 'completed' : ''}>
-                  {goal.text}
-                </span>
-              </div>
-            ))
-          )}
-          
-          {goals.length > 0 && (
-            <div className="progress-section">
-              <p>Progress: {completedCount}/{goals.length} completed</p>
-              <div className="progress-bar">
-                <div 
-                  className="progress-fill"
-                  style={{ width: `${(completedCount/goals.length)*100}%` }}
-                />
-              </div>
-            </div>
-          )}
+        {/* Learning Goals - UPDATED WITH PURPLE THEME */}
+<div className="goals-card">
+  <h3 className="text-whisper-dark-purple">Learning Goals</h3>
+  
+  {goals.map((goal) => (
+    <div key={goal.id} className={`goal-item ${goal.completed ? 'completed' : ''}`}>
+      <input 
+        type="checkbox" 
+        checked={goal.completed}
+        onChange={() => handleToggleGoal(goal.id)}
+        className="goal-checkbox"
+        style={{ accentColor: '#6B46C1' }}
+      />
+      <span className={`goal-text ${goal.completed ? 'completed' : 'text-whisper-dark-purple'}`}>
+        {goal.text}
+      </span>
+    </div>
+  ))}
 
-          <div className="add-goal">
-            <input
-              type="text"
-              value={newGoal}
-              onChange={(e) => setNewGoal(e.target.value)}
-              placeholder="+ Add Goal"
-              onKeyPress={(e) => e.key === 'Enter' && handleAddGoal()}
-            />
-          </div>
-        </div>
+  {/* Progress Section */}
+  <div className="progress-section">
+    <p className="text-whisper-dark-purple">
+      Progress: {completedCount}/{goals.length} completed
+    </p>
+    <div className="progress-bar-bg">
+      <div 
+        className="progress-bar-fill"
+        style={{ 
+          width: `${(completedCount/goals.length)*100}%`,
+          background: '#6B46C1' 
+        }}
+      />
+    </div>
+  </div>
+
+  {/* Add Goal Input */}
+  <div className="add-goal">
+    <input
+      type="text"
+      value={newGoal}
+      onChange={(e) => setNewGoal(e.target.value)}
+      placeholder="+ Add Goal"
+      onKeyPress={(e) => e.key === 'Enter' && handleAddGoal()}
+      className="whisper-input"
+      style={{ color: '#9F7AEA' }}
+    />
+  </div>
+</div>
       </div>
     </div>
   );

@@ -895,3 +895,32 @@ h1, h2, h3, h4, h5, h6 {
   text-align: center;
   padding: 20px;
 }
+
+/* Additional purple shades for specific elements */
+.reflection-item {
+  border-bottom-color: rgba(107, 70, 193, 0.15) !important;
+}
+
+.goal-item {
+  border-bottom-color: rgba(107, 70, 193, 0.1) !important;
+}
+
+/* Progress bar container */
+.progress-section {
+  background: rgba(107, 70, 193, 0.05);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+/* Checkbox styling */
+.goal-checkbox {
+  accent-color: #6B46C1;
+  width: 18px;
+  height: 18px;
+}
+
+/* Input placeholder color */
+.add-goal input::placeholder {
+  color: #B794F4 !important;
+  opacity: 0.7;
+}
